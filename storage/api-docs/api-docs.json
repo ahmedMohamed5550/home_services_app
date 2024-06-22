@@ -1,0 +1,1819 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Swagger with Laravel",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/register": {
+            "post": {
+                "tags": [
+                    "userAuth"
+                ],
+                "summary": "Register a new user",
+                "operationId": "43936973f8e2692c1479f47f03a584c0",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "User's name",
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "description": "User's email",
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "description": "User's password",
+                                        "type": "string"
+                                    },
+                                    "phone": {
+                                        "description": "User's phone",
+                                        "type": "string"
+                                    },
+                                    "image": {
+                                        "description": "User's image",
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "userType": {
+                                        "description": "userType choose between ['user','employee','admin']",
+                                        "type": "string"
+                                    },
+                                    "comment": {
+                                        "description": "to access image use https://mahllola.online/public/image  example : https://mahllola.online/public/storage/services_folder/ttyVNuauz67kqXX40jyewMwh3DWpdFjjyJ0pIiPd.jpg ",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User registered successfully"
+                    },
+                    "422": {
+                        "description": "Validation errors"
+                    }
+                }
+            }
+        },
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "userAuth"
+                ],
+                "summary": "Authenticate user and generate token",
+                "operationId": "6942ca1d56763b3a214de332c05d266d",
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "User's email",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "password",
+                        "in": "query",
+                        "description": "User's password",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Login successful"
+                    },
+                    "401": {
+                        "description": "Invalid credentials"
+                    }
+                }
+            }
+        },
+        "/api/editUserProfile/{user_id}": {
+            "post": {
+                "tags": [
+                    "userAuth"
+                ],
+                "summary": "edit to user profile",
+                "operationId": "e36eca9c8cdaf3a2508913fc6617a797",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "description": "ID of the user",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "name",
+                                        "type": "string"
+                                    },
+                                    "image": {
+                                        "description": "Image file",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "update Profile successfully"
+                    },
+                    "422": {
+                        "description": "Validation errors"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/user": {
+            "get": {
+                "tags": [
+                    "userAuth"
+                ],
+                "summary": "Get logged-in user details",
+                "operationId": "6f7ca4c1e43467d7f1eeadf237ea0fe6",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/allUser": {
+            "get": {
+                "tags": [
+                    "userAuth"
+                ],
+                "summary": "Get display all user details",
+                "operationId": "9a65ef22f77d39d0961403648e5a1329",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/user/notifications/{id}": {
+            "get": {
+                "tags": [
+                    "userAuth"
+                ],
+                "summary": "show all notifications to user and find {id} by user auth",
+                "operationId": "117734618549b114c435c7d21cdd124c",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            }
+        },
+        "/api/logout": {
+            "get": {
+                "tags": [
+                    "userAuth"
+                ],
+                "summary": "user logout",
+                "operationId": "caa4a932e14761c08f4977c5c1734c4b",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/employee/employeeCompleteData": {
+            "post": {
+                "tags": [
+                    "Employee"
+                ],
+                "summary": "Add details to employee",
+                "operationId": "1dbb2ce22965cc6ef99407331b317302",
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "desc": {
+                                        "description": "Description of the employee",
+                                        "type": "string"
+                                    },
+                                    "imageSSN": {
+                                        "description": "صورة الباطاقة",
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "livePhoto": {
+                                        "description": "صورة لايف",
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "nationalId": {
+                                        "description": " الرقم القومي",
+                                        "type": "string"
+                                    },
+                                    "min_price": {
+                                        "description": "Minimum price",
+                                        "type": "integer"
+                                    },
+                                    "user_id": {
+                                        "description": "User ID",
+                                        "type": "integer"
+                                    },
+                                    "service_id": {
+                                        "description": "Service ID",
+                                        "type": "integer"
+                                    },
+                                    "works[0][image]": {
+                                        "description": "Image work 1",
+                                        "type": "string",
+                                        "format": "binary",
+                                        "nullable": true
+                                    },
+                                    "works[1][image]": {
+                                        "description": "Image work 2",
+                                        "type": "string",
+                                        "format": "binary",
+                                        "nullable": true
+                                    },
+                                    "works[2][image]": {
+                                        "description": "Image work 3",
+                                        "type": "string",
+                                        "format": "binary",
+                                        "nullable": true
+                                    },
+                                    "works[3][image]": {
+                                        "description": "Image work 4",
+                                        "type": "string",
+                                        "format": "binary",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Employee details add successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "successfully"
+                                        },
+                                        "employee": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/employee/updateWorksImage/{id}": {
+            "post": {
+                "tags": [
+                    "Employee"
+                ],
+                "summary": "Edit an employee works image",
+                "operationId": "updateWorksImage",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the employee",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "works[0][image]": {
+                                        "description": "Image work 1",
+                                        "type": "string",
+                                        "format": "binary",
+                                        "nullable": true
+                                    },
+                                    "works[1][image]": {
+                                        "description": "Image work 2",
+                                        "type": "string",
+                                        "format": "binary",
+                                        "nullable": true
+                                    },
+                                    "works[2][image]": {
+                                        "description": "Image work 3",
+                                        "type": "string",
+                                        "format": "binary",
+                                        "nullable": true
+                                    },
+                                    "works[3][image]": {
+                                        "description": "Image work 4",
+                                        "type": "string",
+                                        "format": "binary",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Employee updated successfully"
+                    },
+                    "422": {
+                        "description": "Validation errors"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/employee/employeeProfile/{id}": {
+            "get": {
+                "tags": [
+                    "Employee"
+                ],
+                "summary": "Show employee profile",
+                "description": "Show employee profile by employee id",
+                "operationId": "2297a9c817dc43c2ad915af565cd1fe9",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the employee to show profile",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Show employee profile successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Employee not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/employee/editEmployeeProfile/{id}": {
+            "post": {
+                "tags": [
+                    "Employee"
+                ],
+                "summary": "Update employee profile",
+                "operationId": "editEmployeeProfile",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the employee to update",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "Name of the employee",
+                                        "type": "string"
+                                    },
+                                    "desc": {
+                                        "description": "Description of the employee",
+                                        "type": "string"
+                                    },
+                                    "min_price": {
+                                        "description": "Minimum price",
+                                        "type": "integer"
+                                    },
+                                    "image": {
+                                        "description": "Profile image of the employee",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Employee profile updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Employee profile updated successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation error message"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Employee not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Employee not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/employee/changeEmployeeStatus/{employee_id}": {
+            "post": {
+                "tags": [
+                    "Employee"
+                ],
+                "summary": "change employee Status between ['available','busy']",
+                "operationId": "get_employee_id",
+                "parameters": [
+                    {
+                        "name": "employee_id",
+                        "in": "path",
+                        "description": "ID of the employee",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "status": {
+                                        "description": "employee status",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "change employee status successfully"
+                    },
+                    "422": {
+                        "description": "Validation errors"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/employee/showEmployeeLastWorks/{user_id}": {
+            "get": {
+                "tags": [
+                    "Employee"
+                ],
+                "summary": "show all employee work image",
+                "description": "show all employee work image by user ID",
+                "operationId": "3acec25212b0b268039cdfd10e73b38d",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "description": "ID of the user to show all last works image",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "show last work successfully"
+                    },
+                    "404": {
+                        "description": "user not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/employee/showAllEmployeesByServiceId/{service_id}": {
+            "get": {
+                "tags": [
+                    "Employee"
+                ],
+                "summary": "Get all employee in each service",
+                "operationId": "eafe3029efab73457064d2378f35c24d",
+                "parameters": [
+                    {
+                        "name": "service_id",
+                        "in": "path",
+                        "description": "ID of the service",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/employee/getTotalOrders/{id}/orders/total": {
+            "get": {
+                "tags": [
+                    "Employee"
+                ],
+                "summary": "Get total count orders to employee",
+                "operationId": "de6f9ddf4483f726e5faf5a76c8b3b3d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the employee",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/makeFeedback": {
+            "post": {
+                "tags": [
+                    "Feedback"
+                ],
+                "summary": "add new feedbackto employee ",
+                "operationId": "6ef6604d9f4198c4f4f6072ef234a879",
+                "parameters": [
+                    {
+                        "name": "comment",
+                        "in": "query",
+                        "description": "order comment",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "rating",
+                        "in": "query",
+                        "description": "rating",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "user id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "employee_id",
+                        "in": "query",
+                        "description": "employee id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "make feedback successfully"
+                    },
+                    "422": {
+                        "description": "Validation errors"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/getEmployeeFeedback/{employee_id}": {
+            "get": {
+                "tags": [
+                    "Feedback"
+                ],
+                "summary": "Get all employee feedback",
+                "operationId": "f633598289d4d374784986195f0c546d",
+                "parameters": [
+                    {
+                        "name": "employee_id",
+                        "in": "path",
+                        "description": "employee_id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/deleteFeedback/{id}": {
+            "delete": {
+                "tags": [
+                    "Feedback"
+                ],
+                "summary": "Delete an feedback",
+                "description": "Delete feedback by ID",
+                "operationId": "eee6dda79f6a03bed3c9718a7849d56e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the feedbck to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "feedback deleted successfully"
+                    },
+                    "404": {
+                        "description": "feedback not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/getAverageRatingPerEmployee": {
+            "get": {
+                "tags": [
+                    "Feedback"
+                ],
+                "summary": "Get getAverageRatingPerEmployee",
+                "operationId": "37d52e3b279f1bf138cdccecdc4d5a3c",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/editFeedback/{id}": {
+            "post": {
+                "tags": [
+                    "Feedback"
+                ],
+                "summary": "Edit an Feedback",
+                "operationId": "editFeedback",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the Feedback",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "comment": {
+                                        "description": "comment of Employee",
+                                        "type": "string"
+                                    },
+                                    "rating": {
+                                        "description": "rating Employee",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Feedback updated successfully"
+                    },
+                    "422": {
+                        "description": "Validation errors"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/location/store": {
+            "post": {
+                "tags": [
+                    "location"
+                ],
+                "summary": "Add location to user",
+                "operationId": "b82460b88165abfedd021a6041a76a57",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "city": {
+                                        "description": "City name",
+                                        "type": "string"
+                                    },
+                                    "bitTitle": {
+                                        "description": "Title or nickname for the location",
+                                        "type": "string"
+                                    },
+                                    "street": {
+                                        "description": "Street name",
+                                        "type": "string"
+                                    },
+                                    "specialMarque": {
+                                        "description": "Special landmark near the location",
+                                        "type": "string"
+                                    },
+                                    "lat": {
+                                        "description": "Latitude coordinate",
+                                        "type": "number",
+                                        "format": "float"
+                                    },
+                                    "long": {
+                                        "description": "Longitude coordinate",
+                                        "type": "number",
+                                        "format": "float"
+                                    },
+                                    "user_id": {
+                                        "description": "User ID",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Location added successfully"
+                    },
+                    "422": {
+                        "description": "Validation errors"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/location/showUsersLocation/{user_id}": {
+            "get": {
+                "tags": [
+                    "location"
+                ],
+                "summary": "show all location",
+                "description": "show all location to user by user ID",
+                "operationId": "b3d9d65bb8c702d90091082bb73e8a55",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "description": "ID of the user to show all locations",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "show locations successfully"
+                    },
+                    "404": {
+                        "description": "user not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/location/update/{id}": {
+            "post": {
+                "tags": [
+                    "location"
+                ],
+                "summary": "Update user location",
+                "operationId": "a7516cb4e9c3a29bfec937be5bde2c54",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the location",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "city": {
+                                        "description": "City name",
+                                        "type": "string"
+                                    },
+                                    "bitTitle": {
+                                        "description": "Title or nickname for the location",
+                                        "type": "string"
+                                    },
+                                    "street": {
+                                        "description": "Street name",
+                                        "type": "string"
+                                    },
+                                    "specialMarque": {
+                                        "description": "Special landmark near the location",
+                                        "type": "string"
+                                    },
+                                    "lat": {
+                                        "description": "Latitude coordinate",
+                                        "type": "number",
+                                        "format": "float"
+                                    },
+                                    "long": {
+                                        "description": "Longitude coordinate",
+                                        "type": "number",
+                                        "format": "float"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Location updated successfully"
+                    },
+                    "422": {
+                        "description": "Validation errors"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/location/destroy/{id}": {
+            "delete": {
+                "tags": [
+                    "location"
+                ],
+                "summary": "Delete an location",
+                "description": "Delete location to user by location ID",
+                "operationId": "6a9c28bd8d33ed2adb83a98f0392fc2c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the location to delete it",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "location deleted successfully"
+                    },
+                    "404": {
+                        "description": "user not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/sponsor": {
+            "get": {
+                "tags": [
+                    "Sponsors"
+                ],
+                "summary": "show all sponsors",
+                "operationId": "807ae4de1f50e69c31f7628071c407cd",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/sponsor/": {
+            "post": {
+                "tags": [
+                    "Sponsors"
+                ],
+                "summary": "create a new sponsor",
+                "operationId": "01ab1c1a1b62483c602ec8cb43850b18",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "description": "title of sponsors",
+                                        "type": "string"
+                                    },
+                                    "desc": {
+                                        "description": "sponsor description",
+                                        "type": "string"
+                                    },
+                                    "image": {
+                                        "description": "service image",
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "expired_at": {
+                                        "description": "what is the sponsor expired at",
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "comment": {
+                                        "description": "to access image use https://mahllola.online/public/image  example : https://mahllola.online/public/storage/services_folder/ttyVNuauz67kqXX40jyewMwh3DWpdFjjyJ0pIiPd.jpg",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "add new sponsor successfully"
+                    },
+                    "422": {
+                        "description": "Validation errors"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/sponsor/{id}": {
+            "get": {
+                "tags": [
+                    "Sponsors"
+                ],
+                "summary": "Get sponsor by id",
+                "operationId": "1ba9a15657ee63f87e8ccac35bbe6391",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "sponsor id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Sponsors"
+                ],
+                "summary": "Delete an sponsor",
+                "description": "Delete service by ID",
+                "operationId": "67091bdbfdcf3ca08911c5cd62dc6a94",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the sponsor to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "sponsor deleted successfully"
+                    },
+                    "404": {
+                        "description": "sponsor not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/makeOrder": {
+            "post": {
+                "tags": [
+                    "Order"
+                ],
+                "summary": "add new order",
+                "operationId": "823d6e8e95d4d96649819dab78bbba7a",
+                "parameters": [
+                    {
+                        "name": "price",
+                        "in": "query",
+                        "description": "order price",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "location",
+                        "in": "query",
+                        "description": "order location",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "date_of_delivery",
+                        "in": "query",
+                        "description": "date of delivery to order in dateTime",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time"
+                        },
+                        "example": "2020-12-23 17:40:00"
+                    },
+                    {
+                        "name": "order_descriptions",
+                        "in": "query",
+                        "description": "order_descriptions",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "voucher_code",
+                        "in": "query",
+                        "description": "make discount in order price if has a voucher code valid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "user id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "employee_id",
+                        "in": "query",
+                        "description": "employee id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "make order successfully"
+                    },
+                    "422": {
+                        "description": "Validation errors"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/getUserOrders/{user_id}": {
+            "get": {
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Get all users order",
+                "operationId": "3e5646eec1f297ef5ffa67e002f9610f",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "description": "user id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/getEmployeeOrders/{employee_id}": {
+            "get": {
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Get all employees order",
+                "operationId": "53171b1e0f75077236c5bcd29f3b7efc",
+                "parameters": [
+                    {
+                        "name": "employee_id",
+                        "in": "path",
+                        "description": "employee id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/changeOrderStatus/{order_id}": {
+            "post": {
+                "tags": [
+                    "Order"
+                ],
+                "summary": "change order Status between ['accepted','waiting','rejected']",
+                "operationId": "get_order_id",
+                "parameters": [
+                    {
+                        "name": "order_id",
+                        "in": "path",
+                        "description": "ID of the order",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "status": {
+                                        "description": "order status",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "change order status successfully"
+                    },
+                    "422": {
+                        "description": "Validation errors"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/orders": {
+            "get": {
+                "tags": [
+                    "Order"
+                ],
+                "summary": "show all orders to admin",
+                "operationId": "1b87309db8ad5f5de2124dbcf552d24c",
+                "responses": {
+                    "200": {
+                        "description": "show all order succesfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/deleteOrder/{order_id}": {
+            "delete": {
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Delete an order",
+                "description": "Delete order by ID",
+                "operationId": "f034669524e710e24074f1b28971b2c1",
+                "parameters": [
+                    {
+                        "name": "order_id",
+                        "in": "path",
+                        "description": "ID of the order to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "order deleted successfully"
+                    },
+                    "404": {
+                        "description": "order not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/services": {
+            "get": {
+                "tags": [
+                    "services"
+                ],
+                "summary": "Show all services",
+                "operationId": "93d89d1f71391c62aa6cc3610642cee6",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "services"
+                ],
+                "summary": "create a new service",
+                "operationId": "0b661f9e8de5558388298a2f71810de6",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "name of service",
+                                        "type": "string"
+                                    },
+                                    "desc": {
+                                        "description": "service description",
+                                        "type": "string"
+                                    },
+                                    "image": {
+                                        "description": "service image",
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "comment": {
+                                        "description": "to access image use https://mahllola.online/public/image  example : https://mahllola.online/public/storage/services_folder/ttyVNuauz67kqXX40jyewMwh3DWpdFjjyJ0pIiPd.jpg",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "add new service successfully"
+                    },
+                    "422": {
+                        "description": "Validation errors"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/services/{service_id}": {
+            "get": {
+                "tags": [
+                    "services"
+                ],
+                "summary": "Get service by id",
+                "operationId": "f7395c811bc12ffe79066608c0d5a3e5",
+                "parameters": [
+                    {
+                        "name": "service_id",
+                        "in": "path",
+                        "description": "service id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "services"
+                ],
+                "summary": "edit to services",
+                "operationId": "9df1a128ec2a1853a7868e7fcd8f8a47",
+                "parameters": [
+                    {
+                        "name": "service_id",
+                        "in": "path",
+                        "description": "ID of the service",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "service name",
+                                        "type": "string"
+                                    },
+                                    "desc": {
+                                        "description": "service description",
+                                        "type": "string"
+                                    },
+                                    "image": {
+                                        "description": "Image file",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "update service successfully"
+                    },
+                    "422": {
+                        "description": "Validation errors"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "services"
+                ],
+                "summary": "Delete an service",
+                "description": "Delete service by ID",
+                "operationId": "91c77b0901a94b028f8f4300f284fcc0",
+                "parameters": [
+                    {
+                        "name": "service_id",
+                        "in": "path",
+                        "description": "ID of the service to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "service deleted successfully"
+                    },
+                    "404": {
+                        "description": "service not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/vouchers": {
+            "get": {
+                "tags": [
+                    "Vouchers"
+                ],
+                "summary": "show all vouchers",
+                "operationId": "6dd46a1789581f210211349827d09e65",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/addVoucher": {
+            "post": {
+                "tags": [
+                    "Vouchers"
+                ],
+                "summary": "add new voucher",
+                "operationId": "db0b1f257d199e1e211eb7c960ec2703",
+                "parameters": [
+                    {
+                        "name": "code",
+                        "in": "query",
+                        "description": "voucher code",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "voucher type between [fixed,percent]",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "discount",
+                        "in": "query",
+                        "description": "voucher discount",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "status to voucher between [active,inactive,expired]",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "expired_at",
+                        "in": "query",
+                        "description": "voucher expired at",
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "make voucher successfully"
+                    },
+                    "422": {
+                        "description": "Validation errors"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    }
+}
