@@ -86,7 +86,7 @@ class userAuthController extends Controller
             'userType' => 'required|in:user,admin,employee',
         ];
         if ($request->hasFile('image')) {
-            $validatedData['image'] = 'file|mimes:jpeg,png,jpg,gif|max:2048';
+            $validatedData['image'] = 'sometimes|file|mimes:jpeg,png,jpg,gif|max:2048';
             // Validate the request data
             $validatedData = Validator::make($request->all(), $validatedData);
             if ($validatedData->fails()) {
@@ -124,29 +124,41 @@ class userAuthController extends Controller
     }
 
 
-    /**
-     * @OA\Post(
-     * path="/api/login",
-     * summary="Authenticate user and generate token",
-     * tags={"userAuth"},
-     * @OA\Parameter(
-     * name="email",
-     * in="query",
-     * description="User's email",
-     * required=true,
-     * @OA\Schema(type="string")
-     * ),
-     * @OA\Parameter(
-     * name="password",
-     * in="query",
-     * description="User's password",
-     * required=true,
-     * @OA\Schema(type="string")
-     * ),
-     * @OA\Response(response="200", description="Login successful"),
-     * @OA\Response(response="401", description="Invalid credentials")
-     * )
-     */
+/**
+ * @OA\Post(
+ * path="/api/login",
+ * summary="Authenticate user and generate token",
+ * tags={"userAuth"},
+ * @OA\Parameter(
+ *     name="email",
+ *     in="query",
+ *     description="User's email",
+ *     required=true,
+ *     @OA\Schema(
+ *         type="string",
+ *         example="ahmed@gmail.com"
+ *     )
+ * ),
+ * @OA\Parameter(
+ *     name="password",
+ *     in="query",
+ *     description="User's password",
+ *     required=true,
+ *     @OA\Schema(
+ *         type="string",
+ *         example="Am123456"
+ *     )
+ * ),
+ * @OA\Response(
+ *     response="200",
+ *     description="Login successful"
+ * ),
+ * @OA\Response(
+ *     response="401",
+ *     description="Invalid credentials"
+ * )
+ * )
+ */
 
      public function login(Request $request)
      {
@@ -358,6 +370,8 @@ class userAuthController extends Controller
         $user = $request->user();
         return response()->json(['user' => $user], 200);
     }
+
+    
     /**
      * @OA\Get(
      * path="/api/allUser",
@@ -380,11 +394,21 @@ class userAuthController extends Controller
 
     }
 
-        /**
+    /**
      * @OA\Get(
      *  path="/api/user/notifications/{id}",
-     *  summary="show all notifications to user and find {id} by user auth",
+     *  summary="show all notifications to user",
      *  tags={"userAuth"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the user",
+     *         @OA\Schema(
+     *             type="integer",
+     *         ),
+     *     ),
      *     @OA\Response(
      *         response="200",
      *         description="Success",
@@ -395,23 +419,29 @@ class userAuthController extends Controller
 
     // return user notifications
 
-    public function notifications($user_id){
+    public function notifications($user_id)
+    {
         $user = User::find($user_id);
-        if($user){
-            $notifications = $user->notifications->map(function ($notification){
-                return $notification->data;
-            });
-        }
-        else{
+        if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
         }
-
+    
+        $notifications = $user->notifications->map(function ($notification) {
+            return $notification->data;
+        });
+    
+        if ($notifications->isEmpty()) {
+            return response()->json([
+                'status' => 'true',
+                'message' => 'No notifications found'
+            ], 200);
+        }
+    
         return response()->json([
             'status' => 'true',
             'message' => $notifications
-        ]);
+        ], 200);
     }
-
 
     // logout function
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Location;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LocationController extends Controller
 {
@@ -52,11 +53,6 @@ class LocationController extends Controller
      *                     format="float",
      *                     description="Longitude coordinate"
      *                 ),
-     *                 @OA\Property(
-     *                     property="user_id",
-     *                     type="integer",
-     *                     description="User ID"
-     *                 ),
      *             )
      *         )
      *     ),
@@ -81,8 +77,10 @@ class LocationController extends Controller
                 'specialMarque' => 'required|string|max:255',
                 'lat' => 'nullable|numeric',
                 'long' => 'nullable|numeric',
-                'user_id' => 'required|exists:users,id',
+                // 'user_id' => 'required|exists:users,id',
             ]);
+
+            $user = Auth::user();
 
             $location = new Location();
             $location->city = $request->city;
@@ -91,7 +89,7 @@ class LocationController extends Controller
             $location->specialMarque = $request->specialMarque;
             $location->lat = $request->lat;
             $location->long = $request->long;
-            $location->user_id = $request->user_id;
+            $location->user_id = $user->id;
             $location->save();
 
             return response()->json(
@@ -118,20 +116,11 @@ class LocationController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/location/showUsersLocation/{user_id}",
+     *     path="/api/location/showUsersLocation",
      *     summary="show all location",
      *     description="show all location to user by user ID",
      *     tags={"location"},
      *     security={{"bearerAuth":{}}},
-     *     @OA\Parameter(
-     *         name="user_id",
-     *         in="path",
-     *         description="ID of the user to show all locations",
-     *         required=true,
-     *         @OA\Schema(
-     *             type="integer"
-     *         )
-     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="show locations successfully"
@@ -143,12 +132,15 @@ class LocationController extends Controller
      * )
      */
 
-    public function showUsersLocation($id){
-        $location = Location::where('user_id',$id)->get();
+    public function showUsersLocation(){
+
+        $user = Auth::user();
+        $location = Location::where('user_id',$user->id)->get();
+
         if($location ->count() != 0){
-            foreach($location as $locations){
-                $locations->user;
-            }
+            // foreach($location as $locations){
+            //     $locations->user;
+            // }
             return response()->json([
                 'status' => 'true',
                 'locations' => $location,

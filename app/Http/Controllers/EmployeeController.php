@@ -780,5 +780,55 @@ class EmployeeController extends Controller
      }
 
 
+    /**
+     * @OA\Get(
+     *  path="/api/employee/notifications/{id}",
+     *  summary="show all notifications to employee by id",
+     *  tags={"Employee"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the employee",
+     *         @OA\Schema(
+     *             type="integer",
+     *         ),
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Success",
+     *     ),
+     *
+     * )
+     */
+
+    // return user notifications
+
+    public function notifications($id)
+    {
+        $employee = Employee::find($id);
+        if (!$employee) {
+            return response()->json(['message' => 'Employee not found'], 404);
+        }
+    
+        $notifications = $employee->notifications->map(function ($notification) {
+            return $notification->data;
+        });
+    
+        if ($notifications->isEmpty()) {
+            return response()->json([
+                'status' => 'true',
+                'message' => 'No notifications found'
+            ], 200);
+        }
+    
+        return response()->json([
+            'status' => 'true',
+            'message' => $notifications
+        ], 200);
+    }
+
+
 
 }

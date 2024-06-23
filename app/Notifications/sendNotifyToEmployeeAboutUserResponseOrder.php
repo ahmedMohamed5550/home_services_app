@@ -8,27 +8,21 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class sendNotifyToUserAboutEmployeeResponse extends Notification
+class sendNotifyToEmployeeAboutUserResponseOrder extends Notification
 {
     use Queueable;
 
     private $order_id;
-    private $employee_name;
+    private $user_name;
     private $status;
 
-    public function __construct($order_id,$employee_name,$status)
+    public function __construct($order_id,$user_name,$status)
     {
-        // $this->id = $id;
         $this->order_id = $order_id;
-        $this->employee_name = $employee_name;
+        $this->user_name = $user_name;
         $this->status = $status;
     }
 
-    /**
-     * Get the notification's delivery channels.
-     *
-     * @return array<int, string>
-     */
     public function via(object $notifiable): array
     {
         return ['database'];
@@ -39,8 +33,8 @@ class sendNotifyToUserAboutEmployeeResponse extends Notification
     {
         return [
             'order_id' => $this->order_id,
-            'employee_name' => $this->employee_name,
-            'message' =>$this->employee_name." " . $this->status . " this order",
+            'user_name' => $this->user_name,
+            'message' =>$this->user_name." " . $this->status . " this order",
             'timestamp' => Carbon::now()->toDateTimeString()
         ];
     }

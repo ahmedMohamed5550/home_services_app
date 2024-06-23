@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Models\User;
 use App\Models\Voucher;
 use App\Notifications\sendNotifyToEmployeeAboutOrder;
+use App\Notifications\sendNotifyToEmployeeAboutUserResponseOrder;
 use App\Notifications\sendNotifyToUserAboutEmployeeResponse;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -133,7 +134,7 @@ class orderController extends Controller
     $order->save();
 
     // who is send to a notification
-    $order_employee = User::where('id',$order->employee_id)->get();
+    $order_employee = Employee::where('id',$order->employee_id)->get();
 
     Notification::send($order_employee,new sendNotifyToEmployeeAboutOrder(
         $order->id,
@@ -349,7 +350,79 @@ class orderController extends Controller
         }
     }
 
-        /**
+
+    /**
+     * @OA\Get(
+     *     path="/api/userCancelYourOrder/{id}",
+     *     summary="change order Status to rejected by order id",
+     *     tags={"Order"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the order",
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="201",
+     *         description="change order status successfully"
+     *     ),
+     *     @OA\Response(
+     *         response="422",
+     *         description="Validation errors"
+     *     ),
+     *     security={{"bearerAuth": {}}}
+     * )
+     */
+
+    // function to change status
+
+    public function userCancelYourOrder($id){
+        try{
+        $order=Order::find($id);
+            if($order){
+                $order->update(['status' => 'rejected']);
+
+            // who is send to anotifications
+
+            $order_response_to_employee = Employee::where('id',$order->employee_id)->get();
+
+            Notification::send($order_response_to_employee,new sendNotifyToEmployeeAboutUserResponseOrder(
+                $order->id,
+                $order->user->name,
+                $order->status,
+            ));
+                return response()->json([
+                    'status' => 'true',
+                    'message' => 'change status successfully',
+                ],200);
+            }
+
+            else {
+                return response()->json([
+                    'status' => 'false',
+                    'message' => 'no order found',
+                ],401);
+            }
+
+        }
+
+        catch (Throwable $e) {
+            throw $e;
+        }
+    }
+    
+
+
+
+
+
+
+
+    /**
      * @OA\Get(
      * path="/api/orders",
      * summary="show all orders to admin",
@@ -386,7 +459,7 @@ class orderController extends Controller
 
     }
 
-    /**
+/**
  * @OA\Delete(
  *     path="/api/deleteOrder/{order_id}",
  *     summary="Delete an order",

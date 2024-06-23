@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -41,6 +42,7 @@ class sendNotifyToEmployeeAboutOrder extends Notification
             'date_of_delivery' => $this->date_of_delivery,
             'descriptions' => $this->descriptions,
             'user_name' => $this->user_name,
+            'timestamp' => Carbon::now()->toDateTimeString()
         ];
     }
 }

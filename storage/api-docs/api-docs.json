@@ -77,7 +77,8 @@
                         "description": "User's email",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "example": "ahmed@gmail.com"
                         }
                     },
                     {
@@ -86,7 +87,8 @@
                         "description": "User's password",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "example": "Am123456"
                         }
                     }
                 ],
@@ -197,13 +199,29 @@
                 "tags": [
                     "userAuth"
                 ],
-                "summary": "show all notifications to user and find {id} by user auth",
+                "summary": "show all notifications to user",
                 "operationId": "117734618549b114c435c7d21cdd124c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the user",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Success"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/api/logout": {
@@ -744,6 +762,36 @@
                 ]
             }
         },
+        "/api/employee/notifications/{id}": {
+            "get": {
+                "tags": [
+                    "Employee"
+                ],
+                "summary": "show all notifications to employee by id",
+                "operationId": "7621e400ce3641834a9db7c49fa976cf",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the employee",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/makeFeedback": {
             "post": {
                 "tags": [
@@ -978,10 +1026,6 @@
                                         "description": "Longitude coordinate",
                                         "type": "number",
                                         "format": "float"
-                                    },
-                                    "user_id": {
-                                        "description": "User ID",
-                                        "type": "integer"
                                     }
                                 },
                                 "type": "object"
@@ -1004,25 +1048,14 @@
                 ]
             }
         },
-        "/api/location/showUsersLocation/{user_id}": {
+        "/api/location/showUsersLocation": {
             "get": {
                 "tags": [
                     "location"
                 ],
                 "summary": "show all location",
                 "description": "show all location to user by user ID",
-                "operationId": "b3d9d65bb8c702d90091082bb73e8a55",
-                "parameters": [
-                    {
-                        "name": "user_id",
-                        "in": "path",
-                        "description": "ID of the user to show all locations",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
+                "operationId": "d8f08497fc36331471b69d3b82f32a9a",
                 "responses": {
                     "200": {
                         "description": "show locations successfully"
@@ -1462,6 +1495,39 @@
                         }
                     }
                 },
+                "responses": {
+                    "201": {
+                        "description": "change order status successfully"
+                    },
+                    "422": {
+                        "description": "Validation errors"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/userCancelYourOrder/{id}": {
+            "get": {
+                "tags": [
+                    "Order"
+                ],
+                "summary": "change order Status to rejected by order id",
+                "operationId": "7c05d224a0f694bafb2005298c73f8b9",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the order",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "201": {
                         "description": "change order status successfully"

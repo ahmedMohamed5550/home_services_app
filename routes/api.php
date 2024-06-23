@@ -33,7 +33,7 @@ Route::group(['prefix'=>'location'],function($router){
         Route::delete('destroy/{id}', 'destroy');
         Route::post('store', 'store');
         Route::post('update/{id}', 'update');
-        Route::get('showUsersLocation/{id}', 'showUsersLocation');
+        Route::get('showUsersLocation', 'showUsersLocation');
     });
 });
 
@@ -62,6 +62,7 @@ Route::controller(EmployeeController::class)->prefix('employee')->middleware('au
     Route::Post("/editEmployeeProfile/{id}",'editEmployeeProfile');
     Route::get("/showEmployeeLastWorks/{id}",'showEmployeeLastWorks');
     Route::post('/changeEmployeeStatus/{id}', 'changeEmployeeStatus');
+    Route::get("/notifications/{id}",'notifications')->middleware('auth:api');
 
 });
 
@@ -70,6 +71,7 @@ Route::controller(orderController::class)->middleware('auth:api')->group(functio
     Route::get('getUserOrders/{id}','getUserOrders');
     Route::get('getEmployeeOrders/{id}','getEmployeeOrders');
     Route::post('changeOrderStatus/{id}', 'changeOrderStatus');
+    Route::get('userCancelYourOrder/{id}', 'userCancelYourOrder');
     Route::get('orders','index');
     Route::delete('deleteOrder/{id}','deleteOrder');
 });
