@@ -210,7 +210,7 @@ class EmployeeController extends Controller
     }
 
 
-        /**
+    /**
      * @OA\Post(
      *     path="/api/employee/updateWorksImage/{id}",
      *     summary="Edit an employee works image",
@@ -236,41 +236,63 @@ class EmployeeController extends Controller
      *                     type="string",
      *                     format="binary",
      *                     description="Image work 1",
-     *                      nullable=true,
+     *                     nullable=true
      *                 ),
      *                 @OA\Property(
      *                     property="works[1][image]",
      *                     type="string",
      *                     format="binary",
      *                     description="Image work 2",
-     *                      nullable=true,
+     *                     nullable=true
      *                 ),
      *                 @OA\Property(
      *                     property="works[2][image]",
      *                     type="string",
      *                     format="binary",
      *                     description="Image work 3",
-     *                      nullable=true,
+     *                     nullable=true
      *                 ),
      *                 @OA\Property(
      *                     property="works[3][image]",
      *                     type="string",
      *                     format="binary",
      *                     description="Image work 4",
-     *                      nullable=true,
-     *                 ),
+     *                     nullable=true
+     *                 )
      *             )
      *         )
      *     ),
      *     @OA\Response(
      *         response="201",
-     *         description="Employee updated successfully"
+     *         description="Employee updated successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Employee updated successfully")
+     *         )
      *     ),
      *     @OA\Response(
      *         response="422",
-     *         description="Validation errors"
+     *         description="Validation errors",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Validation errors"),
+     *             @OA\Property(
+     *                 property="errors",
+     *                 type="object",
+     *                 @OA\AdditionalProperties(type="array", @OA\Items(type="string"))
+     *             )
+     *         )
      *     ),
-     *     security={{"bearerAuth": {}}}
+     *     @OA\Response(
+     *         response="404",
+     *         description="Employee not found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Employee not found")
+     *         )
+     *     )
      * )
      */
 
@@ -565,7 +587,7 @@ class EmployeeController extends Controller
     /**
      * @OA\Post(
      *     path="/api/employee/changeEmployeeStatus/{employee_id}",
-     *     summary="change employee Status between ['available','busy']",
+     *     summary="Change employee status between ['available', 'busy']",
      *     operationId="get_employee_id",
      *     tags={"Employee"},
      *     security={{"bearerAuth":{}}},
@@ -586,20 +608,53 @@ class EmployeeController extends Controller
      *                 @OA\Property(
      *                     property="status",
      *                     type="string",
-     *                     description="employee status"
-     *                 ),
+     *                     description="Employee status",
+     *                     example="available"
+     *                 )
      *             )
      *         )
      *     ),
      *     @OA\Response(
-     *         response="201",
-     *         description="change employee status successfully"
+     *         response="200",
+     *         description="Change employee status successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="true"),
+     *             @OA\Property(property="message", type="string", example="Change status successfully")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="401",
+     *         description="No employee found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="false"),
+     *             @OA\Property(property="message", type="string", example="No employee found")
+     *         )
      *     ),
      *     @OA\Response(
      *         response="422",
-     *         description="Validation errors"
+     *         description="Validation errors",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="false"),
+     *             @OA\Property(property="message", type="string", example="Validation error"),
+     *             @OA\Property(
+     *                 property="errors",
+     *                 type="object",
+     *                 @OA\AdditionalProperties(type="string")
+     *             )
+     *         )
      *     ),
-     *     security={{"bearerAuth": {}}}
+     *     @OA\Response(
+     *         response="500",
+     *         description="Server error",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="false"),
+     *             @OA\Property(property="message", type="string", example="Server error")
+     *         )
+     *     )
      * )
      */
 
@@ -638,14 +693,14 @@ class EmployeeController extends Controller
     /**
      * @OA\Get(
      *     path="/api/employee/showEmployeeLastWorks/{user_id}",
-     *     summary="show all employee work image",
-     *     description="show all employee work image by user ID",
+     *     summary="Show all employee work images",
+     *     description="Show all employee work images by user ID",
      *     tags={"Employee"},
      *     security={{"bearerAuth":{}}},
      *     @OA\Parameter(
      *         name="user_id",
      *         in="path",
-     *         description="ID of the user to show all last works image",
+     *         description="ID of the user to show all last works images",
      *         required=true,
      *         @OA\Schema(
      *             type="integer"
@@ -653,11 +708,21 @@ class EmployeeController extends Controller
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="show last work successfully"
+     *         description="Show last work successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="true"),
+     *             @OA\Property(property="Employee Work Image", type="array", @OA\Items(type="string"))
+     *         )
      *     ),
      *     @OA\Response(
-     *         response=404,
-     *         description="user not found"
+     *         response=401,
+     *         description="No user found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="No user found")
+     *         )
      *     )
      * )
      */
@@ -690,7 +755,7 @@ class EmployeeController extends Controller
     /**
      * @OA\Get(
      *     path="/api/employee/showAllEmployeesByServiceId/{service_id}",
-     *     summary="Get all employee in each service",
+     *     summary="Get all employees in each service",
      *     tags={"Employee"},
      *     security={{"bearerAuth":{}}},
      *     @OA\Parameter(
@@ -703,16 +768,31 @@ class EmployeeController extends Controller
      *         ),
      *     ),
      *     @OA\Response(
-     *         response="200",
+     *         response=200,
      *         description="Success",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="boolean", example=true),
+     *             @OA\Property(property="allemployee", type="array", @OA\Items(type="object"))
+     *         )
      *     ),
-     *     security={{"bearerAuth":{}}}
+     *     @OA\Response(
+     *         response=401,
+     *         description="No employees found in this service",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="No employee found in this service")
+     *         )
+     *     )
      * )
      */
 
      public function showAllEmployeesByServiceId($service_id)
      {
-         $allemployee = Employee::where('service_id',$service_id)->get();
+         $allemployee = Employee::where('service_id',$service_id)
+         ->where('checkByAdmin','accepted')
+         ->get();
  
          if($allemployee ->count() != 0){
  
@@ -740,7 +820,7 @@ class EmployeeController extends Controller
     /**
      * @OA\Get(
      *     path="/api/employee/getTotalOrders/{id}/orders/total",
-     *     summary="Get total count orders to employee",
+     *     summary="Get total count of orders for employee",
      *     tags={"Employee"},
      *     security={{"bearerAuth":{}}},
      *     @OA\Parameter(
@@ -753,10 +833,23 @@ class EmployeeController extends Controller
      *         ),
      *     ),
      *     @OA\Response(
-     *         response="200",
+     *         response=200,
      *         description="Success",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="boolean", example=true),
+     *             @OA\Property(property="total orders", type="integer", example=10)
+     *         )
      *     ),
-     *     security={{"bearerAuth":{}}}
+     *     @OA\Response(
+     *         response=404,
+     *         description="No employee found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="No employee found")
+     *         )
+     *     )
      * )
      */
 
@@ -782,9 +875,9 @@ class EmployeeController extends Controller
 
     /**
      * @OA\Get(
-     *  path="/api/employee/notifications/{id}",
-     *  summary="show all notifications to employee by id",
-     *  tags={"Employee"},
+     *     path="/api/employee/notifications/{id}",
+     *     summary="Show all notifications for employee by ID",
+     *     tags={"Employee"},
      *     security={{"bearerAuth":{}}},
      *     @OA\Parameter(
      *         name="id",
@@ -796,10 +889,23 @@ class EmployeeController extends Controller
      *         ),
      *     ),
      *     @OA\Response(
-     *         response="200",
+     *         response=200,
      *         description="Success",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="boolean", example=true),
+     *             @OA\Property(property="message", type="array", @OA\Items(type="object"))
+     *         )
      *     ),
-     *
+     *     @OA\Response(
+     *         response=404,
+     *         description="Employee not found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Employee not found")
+     *         )
+     *     )
      * )
      */
 
@@ -828,6 +934,19 @@ class EmployeeController extends Controller
             'message' => $notifications
         ], 200);
     }
+
+
+    // public function searchByName(Request $request)
+    // {
+    //     $searchTerm = $request->input('search_term');
+
+    //     $results = Employee::searchByName($searchTerm);
+
+    //     return response()->json([
+    //         'status' => 'success',
+    //         'data' => $results,
+    //     ], 200);
+    // }
 
 
 

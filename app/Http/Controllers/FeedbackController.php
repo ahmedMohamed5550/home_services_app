@@ -13,41 +13,41 @@ class FeedbackController extends Controller
 {
     /**
      * @OA\Post(
-     * path="/api/makeFeedback",
-     * summary="add new feedbackto employee ",
-     *  tags={"Feedback"},
-     *  security={{"bearerAuth":{}}},
-     * @OA\Parameter(
-     * name="comment",
-     * in="query",
-     * description="order comment",
-     * required=true,
-     * @OA\Schema(type="string")
-     * ),
-     * @OA\Parameter(
-     * name="rating",
-     * in="query",
-     * description="rating",
-     * required=true,
-     * @OA\Schema(type="integer")
-     * ),
-     * @OA\Parameter(
-     * name="user_id",
-     * in="query",
-     * description="user id",
-     * required=true,
-     * @OA\Schema(type="integer")
-     * ),
-     * @OA\Parameter(
-     * name="employee_id",
-     * in="query",
-     * description="employee id",
-     * required=true,
-     * @OA\Schema(type="integer")
-     * ),
-
-     * @OA\Response(response="201", description="make feedback successfully"),
-     * @OA\Response(response="422", description="Validation errors")
+     *     path="/api/makeFeedback",
+     *     summary="Add new feedback to employee",
+     *     tags={"Feedback"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(
+     *                     property="comment",
+     *                     type="string",
+     *                     description="Feedback comment"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="rating",
+     *                     type="integer",
+     *                     description="Rating (1-5)"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="user_id",
+     *                     type="integer",
+     *                     description="User ID"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="employee_id",
+     *                     type="integer",
+     *                     description="Employee ID"
+     *                 ),
+     *                 required={"comment", "rating", "user_id", "employee_id"}
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response="201", description="Feedback added successfully"),
+     *     @OA\Response(response="401", description="Validation errors", @OA\JsonContent())
      * )
      */
     public function makeFeedback(Request $request)
@@ -88,14 +88,14 @@ class FeedbackController extends Controller
     /**
      * @OA\Get(
      *     path="/api/getEmployeeFeedback/{employee_id}",
-     *     summary="Get all employee feedback",
-     *      tags={"Feedback"},
+     *     summary="Get all feedback for an employee",
+     *     tags={"Feedback"},
      *     security={{"bearerAuth":{}}},
      *     @OA\Parameter(
      *         name="employee_id",
      *         in="path",
      *         required=true,
-     *         description="employee_id",
+     *         description="Employee ID",
      *         @OA\Schema(
      *             type="integer",
      *         ),
@@ -103,8 +103,13 @@ class FeedbackController extends Controller
      *     @OA\Response(
      *         response="200",
      *         description="Success",
+     *         @OA\JsonContent()
      *     ),
-     *
+     *     @OA\Response(
+     *         response="404",
+     *         description="No feedback found for this employee",
+     *         @OA\JsonContent()
+     *     ),
      * )
      */
 
@@ -140,14 +145,13 @@ class FeedbackController extends Controller
     /**
      * @OA\Delete(
      *     path="/api/deleteFeedback/{id}",
-     *     summary="Delete an feedback",
-     *     description="Delete feedback by ID",
-     *      tags={"Feedback"},
+     *     summary="Delete a feedback",
+     *     tags={"Feedback"},
      *     security={{"bearerAuth":{}}},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
-     *         description="ID of the feedbck to delete",
+     *         description="ID of the feedback to delete",
      *         required=true,
      *         @OA\Schema(
      *             type="integer"
@@ -155,11 +159,13 @@ class FeedbackController extends Controller
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="feedback deleted successfully"
+     *         description="Feedback deleted successfully",
+     *         @OA\JsonContent()
      *     ),
      *     @OA\Response(
-     *         response=404,
-     *         description="feedback not found"
+     *         response=401,
+     *         description="No feedback found",
+     *         @OA\JsonContent()
      *     )
      * )
      */
@@ -185,14 +191,25 @@ class FeedbackController extends Controller
     /**
      * @OA\Get(
      *     path="/api/getAverageRatingPerEmployee",
-     *     summary="Get getAverageRatingPerEmployee",
-     *      tags={"Feedback"},
+     *     summary="Get average rating per employee",
+     *     tags={"Feedback"},
      *     security={{"bearerAuth":{}}},
      *     @OA\Response(
-     *         response="200",
+     *         response=200,
      *         description="Success",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(
+     *                 @OA\Property(property="employee_id", type="integer"),
+     *                 @OA\Property(property="average_rating", type="number", format="float"),
+     *             )
+     *         )
      *     ),
-     *
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *         @OA\JsonContent()
+     *     ),
      * )
      */
     public function  getAverageRatingPerEmployee()
@@ -211,7 +228,7 @@ class FeedbackController extends Controller
     /**
      * @OA\Post(
      *     path="/api/editFeedback/{id}",
-     *     summary="Edit an Feedback",
+     *     summary="Edit a feedback",
      *     operationId="editFeedback",
      *     tags={"Feedback"},
      *     security={{"bearerAuth":{}}},
@@ -219,7 +236,7 @@ class FeedbackController extends Controller
      *         name="id",
      *         in="path",
      *         required=true,
-     *         description="ID of the Feedback",
+     *         description="ID of the feedback",
      *         @OA\Schema(
      *             type="integer"
      *         )
@@ -227,30 +244,32 @@ class FeedbackController extends Controller
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\MediaType(
-     *             mediaType="multipart/form-data",
+     *             mediaType="application/json",
      *             @OA\Schema(
      *                 @OA\Property(
      *                     property="comment",
      *                     type="string",
-     *                     description="comment of Employee"
+     *                     description="Comment of the feedback"
      *                 ),
      *                 @OA\Property(
      *                     property="rating",
      *                     type="integer",
-     *                     description="rating Employee"
-     *                 )
+     *                     description="Rating (1-5)"
+     *                 ),
+     *                 required={"comment", "rating"}
      *             )
      *         )
      *     ),
      *     @OA\Response(
-     *         response="201",
-     *         description="Feedback updated successfully"
+     *         response="200",
+     *         description="Feedback updated successfully",
+     *         @OA\JsonContent()
      *     ),
      *     @OA\Response(
-     *         response="422",
-     *         description="Validation errors"
+     *         response="401",
+     *         description="Validation errors",
+     *         @OA\JsonContent()
      *     ),
-     *     security={{"bearerAuth": {}}}
      * )
      */
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\Employee;
+use App\Models\Services;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
@@ -124,73 +125,76 @@ class userAuthController extends Controller
     }
 
 
-/**
- * @OA\Post(
- * path="/api/login",
- * summary="Authenticate user and generate token",
- * tags={"userAuth"},
- * @OA\Parameter(
- *     name="email",
- *     in="query",
- *     description="User's email",
- *     required=true,
- *     @OA\Schema(
- *         type="string",
- *         example="ahmed@gmail.com"
- *     )
- * ),
- * @OA\Parameter(
- *     name="password",
- *     in="query",
- *     description="User's password",
- *     required=true,
- *     @OA\Schema(
- *         type="string",
- *         example="Am123456"
- *     )
- * ),
- * @OA\Response(
- *     response="200",
- *     description="Login successful"
- * ),
- * @OA\Response(
- *     response="401",
- *     description="Invalid credentials"
- * )
- * )
- */
+    /**
+     * @OA\Post(
+     * path="/api/login",
+     * summary="Authenticate user and generate token",
+     * tags={"userAuth"},
+     * @OA\Parameter(
+     *     name="email_or_phone",
+     *     in="query",
+     *     description="User's email or phone to login",
+     *     required=true,
+     *     @OA\Schema(
+     *         type="string",
+     *         example="ahmed@gmail.com"
+     *     )
+     * ),
+     * @OA\Parameter(
+     *     name="password",
+     *     in="query",
+     *     description="User's password",
+     *     required=true,
+     *     @OA\Schema(
+     *         type="string",
+     *         example="Am123456"
+     *     )
+     * ),
+     * @OA\Response(
+     *     response="200",
+     *     description="Login successful"
+     * ),
+     * @OA\Response(
+     *     response="401",
+     *     description="Invalid credentials"
+     * )
+     * )
+     */
 
-     public function login(Request $request)
-     {
-         // Validate the request data
-         $validator = Validator::make($request->all(), [
-             'email' => 'required|string|email',
-             'password' => 'required|string',
-         ]);
-     
-         if ($validator->fails()) {
-             return response()->json([
-                 'status' => 'error',
-                 'message' => 'Validation error',
-                 'errors' => $validator->errors(),
-             ], 401);
-         }
-     
-         // Get the credentials from the request
-         $credentials = $request->only('email', 'password');
-     
-         // Attempt to log in the user
-         if (!$token = Auth::attempt($credentials)) {
-             return response()->json([
-                 'status' => 'error',
-                 'message' => 'Unauthorized. Incorrect email or password.',
-             ], 401);
-         }
-     
-         // Get the authenticated user
-         $user = Auth::user();
-
-         if($user->userType == 'user'){
+    public function login(Request $request)
+    {
+        // Validate the request data
+        $validator = Validator::make($request->all(), [
+            'email_or_phone' => 'required|string', // Updated field name
+            'password' => 'required|string',
+        ]);
+    
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validation error',
+                'errors' => $validator->errors(),
+            ], 401);
+        }
+    
+        // Get the credentials from the request
+        $loginData = $request->only('email_or_phone', 'password');
+        
+        // Determine if login data is email or phone
+        $fieldType = filter_var($loginData['email_or_phone'], FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
+        
+        // Attempt to log in the user with the correct field
+        if (!$token = Auth::attempt([$fieldType => $loginData['email_or_phone'], 'password' => $loginData['password']])) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Unauthorized. Incorrect email or password.',
+            ], 401);
+        }
+    
+        // Get the authenticated user
+        $user = Auth::user();
+    
+        if ($user->userType == 'user') {
             return response()->json([
                 'status' => 'success',
                 'user' => $user,
@@ -199,11 +203,9 @@ class userAuthController extends Controller
                     'type' => 'bearer',
                 ]
             ], 200);
-         }
-
-         elseif($user->userType == 'employee'){
-            $employeeData = Employee::where('user_id',$user->id)->first(); 
-
+        } elseif ($user->userType == 'employee') {
+            $employeeData = Employee::where('user_id', $user->id)->first();
+    
             return response()->json([
                 'status' => 'success',
                 'user' => $user,
@@ -213,9 +215,15 @@ class userAuthController extends Controller
                     'type' => 'bearer',
                 ]
             ], 200);
-         }
-         
-     }
+        }
+    
+        // In case user type is neither 'user' nor 'employee', respond with an error (optional)
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Unauthorized user type.',
+        ], 403);
+    }
+ 
      
 
 
@@ -223,7 +231,7 @@ class userAuthController extends Controller
     /**
      * @OA\Post(
      *     path="/api/editUserProfile/{user_id}",
-     *     summary="edit to user profile",
+     *     summary="Edit user profile",
      *     tags={"userAuth"},
      *     security={{"bearerAuth":{}}},
      *     @OA\Parameter(
@@ -243,7 +251,7 @@ class userAuthController extends Controller
      *                 @OA\Property(
      *                     property="name",
      *                     type="string",
-     *                     description="name"
+     *                     description="Name"
      *                 ),
      *                 @OA\Property(
      *                     property="image",
@@ -256,11 +264,38 @@ class userAuthController extends Controller
      *     ),
      *     @OA\Response(
      *         response="201",
-     *         description="update Profile successfully"
+     *         description="Update profile successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Profile updated successfully"),
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="400",
+     *         description="Bad request",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Invalid input data"),
+     *             @OA\Property(property="errors", type="object", example={"name": {"The name field is required."}})
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="401",
+     *         description="Unauthorized",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Unauthorized action")
+     *         )
      *     ),
      *     @OA\Response(
      *         response="422",
-     *         description="Validation errors"
+     *         description="Validation errors",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Validation error"),
+     *             @OA\Property(property="errors", type="object")
+     *         )
      *     )
      * )
      */
@@ -396,9 +431,9 @@ class userAuthController extends Controller
 
     /**
      * @OA\Get(
-     *  path="/api/user/notifications/{id}",
-     *  summary="show all notifications to user",
-     *  tags={"userAuth"},
+     *     path="/api/user/notifications/{id}",
+     *     summary="Show all notifications for a user",
+     *     tags={"userAuth"},
      *     security={{"bearerAuth":{}}},
      *     @OA\Parameter(
      *         name="id",
@@ -406,14 +441,31 @@ class userAuthController extends Controller
      *         required=true,
      *         description="ID of the user",
      *         @OA\Schema(
-     *             type="integer",
-     *         ),
+     *             type="integer"
+     *         )
      *     ),
      *     @OA\Response(
      *         response="200",
      *         description="Success",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="true"),
+     *             @OA\Property(property="message", type="string", example="Notifications retrieved successfully"),
+     *             @OA\Property(
+     *                 property="notifications",
+     *                 type="array",
+     *                 @OA\Items(type="object")
+     *             )
+     *         )
      *     ),
-     *
+     *     @OA\Response(
+     *         response="404",
+     *         description="User not found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="User not found")
+     *         )
+     *     )
      * )
      */
 
@@ -447,12 +499,27 @@ class userAuthController extends Controller
 
     /**
      * @OA\Get(
-     * path="/api/logout",
-     * summary="user logout",
-     * tags={"userAuth"},
-     *  security={{"bearerAuth":{}}},
-     * @OA\Response(response="200", description="Success"),
-     * security={{"bearerAuth":{}}}
+     *     path="/api/logout",
+     *     summary="User logout",
+     *     tags={"userAuth"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Response(
+     *         response="200",
+     *         description="Successfully logged out",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Successfully logged out")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="401",
+     *         description="Unauthorized",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Unauthorized")
+     *         )
+     *     )
      * )
      */
 

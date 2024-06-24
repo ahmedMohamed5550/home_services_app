@@ -25,10 +25,20 @@ class servicesController extends Controller
      *     @OA\Response(
      *         response=200,
      *         description="Success",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="boolean", example=true),
+     *             @OA\Property(property="services", type="array", @OA\Items(type="object"))
+     *         )
      *     ),
      *     @OA\Response(
      *         response=401,
-     *         description="Unauthorized"
+     *         description="Unauthorized",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Unauthorized")
+     *         )
      *     )
      * )
      */

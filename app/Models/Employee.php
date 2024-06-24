@@ -37,5 +37,15 @@ class Employee extends Model
         return $this->hasMany(Order::class);
     }
 
+    // public static function searchByName($searchTerm)
+    // {
+    //     return self::where('name', 'like', '%' . $searchTerm . '%')
+    //         ->orWhereHas('service', function ($query) use ($searchTerm) {
+    //             $query->where('name', 'like', '%' . $searchTerm . '%');
+    //         })
+    //         ->get();
+    // }
+
+
 
 }

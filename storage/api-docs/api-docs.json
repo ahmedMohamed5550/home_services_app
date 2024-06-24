@@ -72,9 +72,9 @@
                 "operationId": "6942ca1d56763b3a214de332c05d266d",
                 "parameters": [
                     {
-                        "name": "email",
+                        "name": "email_or_phone",
                         "in": "query",
-                        "description": "User's email",
+                        "description": "User's email or phone to login",
                         "required": true,
                         "schema": {
                             "type": "string",
@@ -107,7 +107,7 @@
                 "tags": [
                     "userAuth"
                 ],
-                "summary": "edit to user profile",
+                "summary": "Edit user profile",
                 "operationId": "e36eca9c8cdaf3a2508913fc6617a797",
                 "parameters": [
                     {
@@ -127,7 +127,7 @@
                             "schema": {
                                 "properties": {
                                     "name": {
-                                        "description": "name",
+                                        "description": "Name",
                                         "type": "string"
                                     },
                                     "image": {
@@ -143,10 +143,98 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "update Profile successfully"
+                        "description": "Update profile successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Profile updated successfully"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid input data"
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "example": {
+                                                "name": [
+                                                    "The name field is required."
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized action"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "422": {
-                        "description": "Validation errors"
+                        "description": "Validation errors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation error"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -199,7 +287,7 @@
                 "tags": [
                     "userAuth"
                 ],
-                "summary": "show all notifications to user",
+                "summary": "Show all notifications for a user",
                 "operationId": "117734618549b114c435c7d21cdd124c",
                 "parameters": [
                     {
@@ -214,7 +302,46 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "true"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Notifications retrieved successfully"
+                                        },
+                                        "notifications": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -229,11 +356,44 @@
                 "tags": [
                     "userAuth"
                 ],
-                "summary": "user logout",
+                "summary": "User logout",
                 "operationId": "caa4a932e14761c08f4977c5c1734c4b",
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Successfully logged out",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Successfully logged out"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -423,10 +583,69 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Employee updated successfully"
+                        "description": "Employee updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Employee updated successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "422": {
-                        "description": "Validation errors"
+                        "description": "Validation errors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation errors"
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "additionalProperties": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Employee not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Employee not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -624,7 +843,7 @@
                 "tags": [
                     "Employee"
                 ],
-                "summary": "change employee Status between ['available','busy']",
+                "summary": "Change employee status between ['available', 'busy']",
                 "operationId": "get_employee_id",
                 "parameters": [
                     {
@@ -644,8 +863,9 @@
                             "schema": {
                                 "properties": {
                                     "status": {
-                                        "description": "employee status",
-                                        "type": "string"
+                                        "description": "Employee status",
+                                        "type": "string",
+                                        "example": "available"
                                     }
                                 },
                                 "type": "object"
@@ -654,11 +874,91 @@
                     }
                 },
                 "responses": {
-                    "201": {
-                        "description": "change employee status successfully"
+                    "200": {
+                        "description": "Change employee status successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "true"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Change status successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No employee found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "false"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No employee found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "422": {
-                        "description": "Validation errors"
+                        "description": "Validation errors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "false"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation error"
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "additionalProperties": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "false"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Server error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -673,14 +973,14 @@
                 "tags": [
                     "Employee"
                 ],
-                "summary": "show all employee work image",
-                "description": "show all employee work image by user ID",
+                "summary": "Show all employee work images",
+                "description": "Show all employee work images by user ID",
                 "operationId": "3acec25212b0b268039cdfd10e73b38d",
                 "parameters": [
                     {
                         "name": "user_id",
                         "in": "path",
-                        "description": "ID of the user to show all last works image",
+                        "description": "ID of the user to show all last works images",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -689,10 +989,46 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "show last work successfully"
+                        "description": "Show last work successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "true"
+                                        },
+                                        "Employee Work Image": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
-                    "404": {
-                        "description": "user not found"
+                    "401": {
+                        "description": "No user found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No user found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -707,7 +1043,7 @@
                 "tags": [
                     "Employee"
                 ],
-                "summary": "Get all employee in each service",
+                "summary": "Get all employees in each service",
                 "operationId": "eafe3029efab73457064d2378f35c24d",
                 "parameters": [
                     {
@@ -722,7 +1058,46 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "allemployee": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No employees found in this service",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No employee found in this service"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -737,7 +1112,7 @@
                 "tags": [
                     "Employee"
                 ],
-                "summary": "Get total count orders to employee",
+                "summary": "Get total count of orders for employee",
                 "operationId": "de6f9ddf4483f726e5faf5a76c8b3b3d",
                 "parameters": [
                     {
@@ -752,7 +1127,44 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "total orders": {
+                                            "type": "integer",
+                                            "example": 10
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No employee found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No employee found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -767,7 +1179,7 @@
                 "tags": [
                     "Employee"
                 ],
-                "summary": "show all notifications to employee by id",
+                "summary": "Show all notifications for employee by ID",
                 "operationId": "7621e400ce3641834a9db7c49fa976cf",
                 "parameters": [
                     {
@@ -782,7 +1194,46 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Employee not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Employee not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -797,52 +1248,53 @@
                 "tags": [
                     "Feedback"
                 ],
-                "summary": "add new feedbackto employee ",
+                "summary": "Add new feedback to employee",
                 "operationId": "6ef6604d9f4198c4f4f6072ef234a879",
-                "parameters": [
-                    {
-                        "name": "comment",
-                        "in": "query",
-                        "description": "order comment",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "rating",
-                        "in": "query",
-                        "description": "rating",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "user_id",
-                        "in": "query",
-                        "description": "user id",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "employee_id",
-                        "in": "query",
-                        "description": "employee id",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "comment",
+                                    "rating",
+                                    "user_id",
+                                    "employee_id"
+                                ],
+                                "properties": {
+                                    "comment": {
+                                        "description": "Feedback comment",
+                                        "type": "string"
+                                    },
+                                    "rating": {
+                                        "description": "Rating (1-5)",
+                                        "type": "integer"
+                                    },
+                                    "user_id": {
+                                        "description": "User ID",
+                                        "type": "integer"
+                                    },
+                                    "employee_id": {
+                                        "description": "Employee ID",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
                         }
                     }
-                ],
+                },
                 "responses": {
                     "201": {
-                        "description": "make feedback successfully"
+                        "description": "Feedback added successfully"
                     },
-                    "422": {
-                        "description": "Validation errors"
+                    "401": {
+                        "description": "Validation errors",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -857,13 +1309,13 @@
                 "tags": [
                     "Feedback"
                 ],
-                "summary": "Get all employee feedback",
+                "summary": "Get all feedback for an employee",
                 "operationId": "f633598289d4d374784986195f0c546d",
                 "parameters": [
                     {
                         "name": "employee_id",
                         "in": "path",
-                        "description": "employee_id",
+                        "description": "Employee ID",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -872,7 +1324,20 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No feedback found for this employee",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -887,14 +1352,13 @@
                 "tags": [
                     "Feedback"
                 ],
-                "summary": "Delete an feedback",
-                "description": "Delete feedback by ID",
+                "summary": "Delete a feedback",
                 "operationId": "eee6dda79f6a03bed3c9718a7849d56e",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "ID of the feedbck to delete",
+                        "description": "ID of the feedback to delete",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -903,10 +1367,20 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "feedback deleted successfully"
+                        "description": "Feedback deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
                     },
-                    "404": {
-                        "description": "feedback not found"
+                    "401": {
+                        "description": "No feedback found",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -921,11 +1395,38 @@
                 "tags": [
                     "Feedback"
                 ],
-                "summary": "Get getAverageRatingPerEmployee",
+                "summary": "Get average rating per employee",
                 "operationId": "37d52e3b279f1bf138cdccecdc4d5a3c",
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "employee_id": {
+                                                "type": "integer"
+                                            },
+                                            "average_rating": {
+                                                "type": "number",
+                                                "format": "float"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -940,13 +1441,13 @@
                 "tags": [
                     "Feedback"
                 ],
-                "summary": "Edit an Feedback",
+                "summary": "Edit a feedback",
                 "operationId": "editFeedback",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "ID of the Feedback",
+                        "description": "ID of the feedback",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -956,15 +1457,19 @@
                 "requestBody": {
                     "required": true,
                     "content": {
-                        "multipart/form-data": {
+                        "application/json": {
                             "schema": {
+                                "required": [
+                                    "comment",
+                                    "rating"
+                                ],
                                 "properties": {
                                     "comment": {
-                                        "description": "comment of Employee",
+                                        "description": "Comment of the feedback",
                                         "type": "string"
                                     },
                                     "rating": {
-                                        "description": "rating Employee",
+                                        "description": "Rating (1-5)",
                                         "type": "integer"
                                     }
                                 },
@@ -974,11 +1479,21 @@
                     }
                 },
                 "responses": {
-                    "201": {
-                        "description": "Feedback updated successfully"
+                    "200": {
+                        "description": "Feedback updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
                     },
-                    "422": {
-                        "description": "Validation errors"
+                    "401": {
+                        "description": "Validation errors",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -998,7 +1513,7 @@
                 "requestBody": {
                     "required": true,
                     "content": {
-                        "multipart/form-data": {
+                        "application/json": {
                             "schema": {
                                 "properties": {
                                     "city": {
@@ -1026,6 +1541,10 @@
                                         "description": "Longitude coordinate",
                                         "type": "number",
                                         "format": "float"
+                                    },
+                                    "user_id": {
+                                        "description": "User ID",
+                                        "type": "integer"
                                     }
                                 },
                                 "type": "object"
@@ -1035,10 +1554,50 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Location added successfully"
+                        "description": "Location added successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Added Location successfully"
+                                        },
+                                        "location": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "422": {
-                        "description": "Validation errors"
+                        "description": "Validation errors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "An error occurred"
+                                        },
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -1048,20 +1607,67 @@
                 ]
             }
         },
-        "/api/location/showUsersLocation": {
+        "/api/location/showUsersLocation/{user_id}": {
             "get": {
                 "tags": [
                     "location"
                 ],
-                "summary": "show all location",
-                "description": "show all location to user by user ID",
-                "operationId": "d8f08497fc36331471b69d3b82f32a9a",
+                "summary": "Show all locations",
+                "description": "Show all locations for a user by user ID",
+                "operationId": "b3d9d65bb8c702d90091082bb73e8a55",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "description": "ID of the user to show all locations",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "show locations successfully"
+                        "description": "Show locations successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "locations": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
-                    "404": {
-                        "description": "user not found"
+                    "401": {
+                        "description": "No locations found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No locations found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -1092,7 +1698,7 @@
                 "requestBody": {
                     "required": true,
                     "content": {
-                        "multipart/form-data": {
+                        "application/json": {
                             "schema": {
                                 "properties": {
                                     "city": {
@@ -1129,10 +1735,70 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Location updated successfully"
+                        "description": "Location updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Updated Location successfully"
+                                        },
+                                        "location": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Location not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Location not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "422": {
-                        "description": "Validation errors"
+                        "description": "Validation errors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation errors"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -1147,14 +1813,14 @@
                 "tags": [
                     "location"
                 ],
-                "summary": "Delete an location",
-                "description": "Delete location to user by location ID",
+                "summary": "Delete a location",
+                "description": "Delete location for a user by location ID",
                 "operationId": "6a9c28bd8d33ed2adb83a98f0392fc2c",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "ID of the location to delete it",
+                        "description": "ID of the location to delete",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -1163,10 +1829,44 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "location deleted successfully"
+                        "description": "Location deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Delete Location successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "404": {
-                        "description": "user not found"
+                        "description": "Location not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Location not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -1181,11 +1881,50 @@
                 "tags": [
                     "Sponsors"
                 ],
-                "summary": "show all sponsors",
+                "summary": "Show all sponsors",
                 "operationId": "807ae4de1f50e69c31f7628071c407cd",
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "sponsors": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -1195,13 +1934,13 @@
                 ]
             }
         },
-        "/api/sponsor/": {
+        "/api/sponsor/create": {
             "post": {
                 "tags": [
                     "Sponsors"
                 ],
                 "summary": "create a new sponsor",
-                "operationId": "01ab1c1a1b62483c602ec8cb43850b18",
+                "operationId": "8f2fd5ec3ed61e8be2bacfcd10e61874",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -1217,7 +1956,7 @@
                                         "type": "string"
                                     },
                                     "image": {
-                                        "description": "service image",
+                                        "description": "sponsor image",
                                         "type": "string",
                                         "format": "binary"
                                     },
@@ -1285,7 +2024,7 @@
                     "Sponsors"
                 ],
                 "summary": "Delete an sponsor",
-                "description": "Delete service by ID",
+                "description": "Delete sponsor by ID",
                 "operationId": "67091bdbfdcf3ca08911c5cd62dc6a94",
                 "parameters": [
                     {
@@ -1318,80 +2057,94 @@
                 "tags": [
                     "Order"
                 ],
-                "summary": "add new order",
+                "summary": "Add new order",
                 "operationId": "823d6e8e95d4d96649819dab78bbba7a",
-                "parameters": [
-                    {
-                        "name": "price",
-                        "in": "query",
-                        "description": "order price",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "location",
-                        "in": "query",
-                        "description": "order location",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "date_of_delivery",
-                        "in": "query",
-                        "description": "date of delivery to order in dateTime",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "format": "date-time"
-                        },
-                        "example": "2020-12-23 17:40:00"
-                    },
-                    {
-                        "name": "order_descriptions",
-                        "in": "query",
-                        "description": "order_descriptions",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "voucher_code",
-                        "in": "query",
-                        "description": "make discount in order price if has a voucher code valid",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "user_id",
-                        "in": "query",
-                        "description": "user id",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "employee_id",
-                        "in": "query",
-                        "description": "employee id",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "price": {
+                                        "description": "Order price",
+                                        "type": "integer"
+                                    },
+                                    "location": {
+                                        "description": "Order location",
+                                        "type": "string"
+                                    },
+                                    "date_of_delivery": {
+                                        "description": "Date of delivery in DateTime format",
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2020-12-23 17:40:00"
+                                    },
+                                    "order_descriptions": {
+                                        "description": "Order descriptions",
+                                        "type": "string"
+                                    },
+                                    "voucher_code": {
+                                        "description": "Voucher code for discount",
+                                        "type": "string"
+                                    },
+                                    "user_id": {
+                                        "description": "User ID",
+                                        "type": "integer"
+                                    },
+                                    "employee_id": {
+                                        "description": "Employee ID",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
                         }
                     }
-                ],
+                },
                 "responses": {
-                    "201": {
-                        "description": "make order successfully"
+                    "200": {
+                        "description": "Make order successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "true"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Make order done"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
-                    "422": {
-                        "description": "Validation errors"
+                    "401": {
+                        "description": "Validation errors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "false"
+                                        },
+                                        "message": {
+                                            "type": "object",
+                                            "example": {
+                                                "price": [
+                                                    "The price field is required."
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -1406,13 +2159,13 @@
                 "tags": [
                     "Order"
                 ],
-                "summary": "Get all users order",
+                "summary": "Get all orders of a user",
                 "operationId": "3e5646eec1f297ef5ffa67e002f9610f",
                 "parameters": [
                     {
                         "name": "user_id",
                         "in": "path",
-                        "description": "user id",
+                        "description": "User ID",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -1421,7 +2174,46 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "true"
+                                        },
+                                        "message": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No order found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "false"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No order found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -1436,13 +2228,13 @@
                 "tags": [
                     "Order"
                 ],
-                "summary": "Get all employees order",
+                "summary": "Get all orders assigned to an employee",
                 "operationId": "53171b1e0f75077236c5bcd29f3b7efc",
                 "parameters": [
                     {
                         "name": "employee_id",
                         "in": "path",
-                        "description": "employee id",
+                        "description": "Employee ID",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -1451,7 +2243,46 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "true"
+                                        },
+                                        "message": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No order found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "false"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No order found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -1466,8 +2297,8 @@
                 "tags": [
                     "Order"
                 ],
-                "summary": "change order Status between ['accepted','waiting','rejected']",
-                "operationId": "get_order_id",
+                "summary": "Change order status",
+                "operationId": "c38330f772e73f15f77d3c9dabe1919b",
                 "parameters": [
                     {
                         "name": "order_id",
@@ -1482,11 +2313,11 @@
                 "requestBody": {
                     "required": true,
                     "content": {
-                        "multipart/form-data": {
+                        "application/json": {
                             "schema": {
                                 "properties": {
                                     "status": {
-                                        "description": "order status",
+                                        "description": "New status for the order",
                                         "type": "string"
                                     }
                                 },
@@ -1496,11 +2327,45 @@
                     }
                 },
                 "responses": {
-                    "201": {
-                        "description": "change order status successfully"
+                    "200": {
+                        "description": "Change order status successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "true"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Change status successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
-                    "422": {
-                        "description": "Validation errors"
+                    "401": {
+                        "description": "No order found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "false"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No order found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -1515,7 +2380,7 @@
                 "tags": [
                     "Order"
                 ],
-                "summary": "change order Status to rejected by order id",
+                "summary": "Cancel order by user",
                 "operationId": "7c05d224a0f694bafb2005298c73f8b9",
                 "parameters": [
                     {
@@ -1529,11 +2394,45 @@
                     }
                 ],
                 "responses": {
-                    "201": {
-                        "description": "change order status successfully"
+                    "200": {
+                        "description": "Change order status to 'rejected' successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "true"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Change status successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
-                    "422": {
-                        "description": "Validation errors"
+                    "401": {
+                        "description": "No order found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "false"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No order found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -1605,10 +2504,46 @@
                 "operationId": "93d89d1f71391c62aa6cc3610642cee6",
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "services": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "401": {
-                        "description": "Unauthorized"
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -1790,11 +2725,50 @@
                 "tags": [
                     "Vouchers"
                 ],
-                "summary": "show all vouchers",
+                "summary": "Show all vouchers",
                 "operationId": "6dd46a1789581f210211349827d09e65",
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "vouchers": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [

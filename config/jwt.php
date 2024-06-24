@@ -101,7 +101,7 @@ return [
     |
     */
 
-    'ttl' => env('JWT_TTL', 60),
+    'ttl' => env('JWT_TTL', 720), // token expire in 12 hours
 
     /*
     |--------------------------------------------------------------------------
@@ -120,7 +120,7 @@ return [
     |
     */
 
-    'refresh_ttl' => env('JWT_REFRESH_TTL', 20160),
+    'refresh_ttl' => env('JWT_REFRESH_TTL', 129600), // 3 months
 
     /*
     |--------------------------------------------------------------------------
@@ -147,7 +147,7 @@ return [
     'required_claims' => [
         'iss',
         'iat',
-        'exp',
+        'exp', // Remove or comment out 'exp' if 'ttl' is set to null
         'nbf',
         'sub',
         'jti',

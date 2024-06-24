@@ -22,62 +22,73 @@ class orderController extends Controller
 
     /**
      * @OA\Post(
-     * path="/api/makeOrder",
-     * summary="add new order",
-     * tags={"Order"},
-     * security={{"bearerAuth":{}}},
-     * @OA\Parameter(
-     * name="price",
-     * in="query",
-     * description="order price",
-     * required=true,
-     * @OA\Schema(type="integer")
-     * ),
-     * @OA\Parameter(
-     * name="location",
-     * in="query",
-     * description="order location",
-     * required=true,
-     * @OA\Schema(type="string")
-     * ),
-     * @OA\Parameter(
-     * name="date_of_delivery",
-     * in="query",
-     * description="date of delivery to order in dateTime",
-     * example="2020-12-23 17:40:00",
-     * required=true,
-     * @OA\Schema(type="string",format="date-time")
-     * ),
-     * @OA\Parameter(
-     * name="order_descriptions",
-     * in="query",
-     * description="order_descriptions",
-     * required=true,
-     * @OA\Schema(type="string")
-     * ),
-    * @OA\Parameter(
-     * name="voucher_code",
-     * in="query",
-     * description="make discount in order price if has a voucher code valid",
-     * @OA\Schema(type="string")
-     * ),
-     * @OA\Parameter(
-     * name="user_id",
-     * in="query",
-     * description="user id",
-     * required=true,
-     * @OA\Schema(type="integer")
-     * ),
-     * @OA\Parameter(
-     * name="employee_id",
-     * in="query",
-     * description="employee id",
-     * required=true,
-     * @OA\Schema(type="integer")
-     * ),
-
-     * @OA\Response(response="201", description="make order successfully"),
-     * @OA\Response(response="422", description="Validation errors")
+     *     path="/api/makeOrder",
+     *     summary="Add new order",
+     *     tags={"Order"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(
+     *                     property="price",
+     *                     type="integer",
+     *                     description="Order price"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="location",
+     *                     type="string",
+     *                     description="Order location"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="date_of_delivery",
+     *                     type="string",
+     *                     format="date-time",
+     *                     example="2020-12-23 17:40:00",
+     *                     description="Date of delivery in DateTime format"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="order_descriptions",
+     *                     type="string",
+     *                     description="Order descriptions"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="voucher_code",
+     *                     type="string",
+     *                     description="Voucher code for discount"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="user_id",
+     *                     type="integer",
+     *                     description="User ID"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="employee_id",
+     *                     type="integer",
+     *                     description="Employee ID"
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Make order successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="true"),
+     *             @OA\Property(property="message", type="string", example="Make order done")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="401",
+     *         description="Validation errors",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="false"),
+     *             @OA\Property(property="message", type="object", example={"price": {"The price field is required."}})
+     *         )
+     *     )
      * )
      */
 
@@ -156,23 +167,34 @@ class orderController extends Controller
     /**
      * @OA\Get(
      *     path="/api/getUserOrders/{user_id}",
-     *     summary="Get all users order",
+     *     summary="Get all orders of a user",
      *     tags={"Order"},
      *     security={{"bearerAuth":{}}},
      *     @OA\Parameter(
      *         name="user_id",
      *         in="path",
      *         required=true,
-     *         description="user id",
-     *         @OA\Schema(
-     *             type="integer",
-     *         ),
+     *         description="User ID",
+     *         @OA\Schema(type="integer")
      *     ),
      *     @OA\Response(
      *         response="200",
      *         description="Success",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="true"),
+     *             @OA\Property(property="message", type="array", @OA\Items(type="object"))
+     *         )
      *     ),
-     *
+     *     @OA\Response(
+     *         response="401",
+     *         description="No order found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="false"),
+     *             @OA\Property(property="message", type="string", example="No order found")
+     *         )
+     *     )
      * )
      */
 
@@ -214,23 +236,34 @@ class orderController extends Controller
     /**
      * @OA\Get(
      *     path="/api/getEmployeeOrders/{employee_id}",
-     *     summary="Get all employees order",
+     *     summary="Get all orders assigned to an employee",
      *     tags={"Order"},
      *     security={{"bearerAuth":{}}},
      *     @OA\Parameter(
      *         name="employee_id",
      *         in="path",
      *         required=true,
-     *         description="employee id",
-     *         @OA\Schema(
-     *             type="integer",
-     *         ),
+     *         description="Employee ID",
+     *         @OA\Schema(type="integer")
      *     ),
      *     @OA\Response(
      *         response="200",
      *         description="Success",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="true"),
+     *             @OA\Property(property="message", type="array", @OA\Items(type="object"))
+     *         )
      *     ),
-     *
+     *     @OA\Response(
+     *         response="401",
+     *         description="No order found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="false"),
+     *             @OA\Property(property="message", type="string", example="No order found")
+     *         )
+     *     )
      * )
      */
 
@@ -270,11 +303,10 @@ class orderController extends Controller
 
 
 
-        /**
+    /**
      * @OA\Post(
      *     path="/api/changeOrderStatus/{order_id}",
-     *     summary="change order Status between ['accepted','waiting','rejected']",
-     *     operationId="get_order_id",
+     *     summary="Change order status",
      *     tags={"Order"},
      *     security={{"bearerAuth":{}}},
      *     @OA\Parameter(
@@ -282,32 +314,39 @@ class orderController extends Controller
      *         in="path",
      *         required=true,
      *         description="ID of the order",
-     *         @OA\Schema(
-     *             type="integer"
-     *         )
+     *         @OA\Schema(type="integer")
      *     ),
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\MediaType(
-     *             mediaType="multipart/form-data",
+     *             mediaType="application/json",
      *             @OA\Schema(
      *                 @OA\Property(
      *                     property="status",
      *                     type="string",
-     *                     description="order status"
+     *                     description="New status for the order"
      *                 ),
      *             )
      *         )
      *     ),
      *     @OA\Response(
-     *         response="201",
-     *         description="change order status successfully"
+     *         response="200",
+     *         description="Change order status successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="true"),
+     *             @OA\Property(property="message", type="string", example="Change status successfully")
+     *         )
      *     ),
      *     @OA\Response(
-     *         response="422",
-     *         description="Validation errors"
-     *     ),
-     *     security={{"bearerAuth": {}}}
+     *         response="401",
+     *         description="No order found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="false"),
+     *             @OA\Property(property="message", type="string", example="No order found")
+     *         )
+     *     )
      * )
      */
 
@@ -354,7 +393,7 @@ class orderController extends Controller
     /**
      * @OA\Get(
      *     path="/api/userCancelYourOrder/{id}",
-     *     summary="change order Status to rejected by order id",
+     *     summary="Cancel order by user",
      *     tags={"Order"},
      *     security={{"bearerAuth":{}}},
      *     @OA\Parameter(
@@ -362,19 +401,26 @@ class orderController extends Controller
      *         in="path",
      *         required=true,
      *         description="ID of the order",
-     *         @OA\Schema(
-     *             type="integer"
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Change order status to 'rejected' successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="true"),
+     *             @OA\Property(property="message", type="string", example="Change status successfully")
      *         )
      *     ),
      *     @OA\Response(
-     *         response="201",
-     *         description="change order status successfully"
-     *     ),
-     *     @OA\Response(
-     *         response="422",
-     *         description="Validation errors"
-     *     ),
-     *     security={{"bearerAuth": {}}}
+     *         response="401",
+     *         description="No order found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="false"),
+     *             @OA\Property(property="message", type="string", example="No order found")
+     *         )
+     *     )
      * )
      */
 

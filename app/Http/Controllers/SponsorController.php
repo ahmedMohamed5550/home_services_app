@@ -12,11 +12,28 @@ class SponsorController extends Controller
 
     /**
      * @OA\Get(
-     * path="/api/sponsor",
-     * summary="show all sponsors",
-     * tags={"Sponsors"},
-     * security={{"bearerAuth":{}}},
-     * @OA\Response(response="200", description="Success"),
+     *     path="/api/sponsor",
+     *     summary="Show all sponsors",
+     *     tags={"Sponsors"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Success",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="boolean", example=true),
+     *             @OA\Property(property="sponsors", type="array", @OA\Items(type="object"))
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Unauthorized")
+     *         )
+     *     )
      * )
      */
 
@@ -40,7 +57,7 @@ class SponsorController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/sponsor/",
+     *     path="/api/sponsor/create",
      *     summary="create a new sponsor",
      *     tags={"Sponsors"},
      *     security={{"bearerAuth":{}}},
@@ -63,7 +80,7 @@ class SponsorController extends Controller
      *                     property="image",
      *                     type="string",
      *                     format="binary",
-     *                     description="service image"
+     *                     description="sponsor image"
      *                 ),
      *                 @OA\Property(
      *                     property="expired_at",
@@ -166,7 +183,7 @@ class SponsorController extends Controller
      * @OA\Delete(
      *     path="/api/sponsor/{id}",
      *     summary="Delete an sponsor",
-     *     description="Delete service by ID",
+     *     description="Delete sponsor by ID",
      *     tags={"Sponsors"},
      *     security={{"bearerAuth":{}}},
      *     @OA\Parameter(

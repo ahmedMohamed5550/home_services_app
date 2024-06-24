@@ -12,11 +12,28 @@ class voucherController extends Controller
 
     /**
      * @OA\Get(
-     * path="/api/vouchers",
-     * summary="show all vouchers",
-     * tags={"Vouchers"},
-     * security={{"bearerAuth":{}}},
-     * @OA\Response(response="200", description="Success"),
+     *     path="/api/vouchers",
+     *     summary="Show all vouchers",
+     *     tags={"Vouchers"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Success",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="boolean", example=true),
+     *             @OA\Property(property="vouchers", type="array", @OA\Items(type="object"))
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Unauthorized")
+     *         )
+     *     )
      * )
      */
 
