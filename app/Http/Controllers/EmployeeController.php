@@ -790,14 +790,13 @@ class EmployeeController extends Controller
 
      public function showAllEmployeesByServiceId($service_id)
      {
-         $allemployee = Employee::where('service_id',$service_id)
-         ->where('checkByAdmin','accepted')
-         ->get();
+         $allemployee = Employee::where('service_id',$service_id)->get();
  
          if($allemployee ->count() != 0){
  
              foreach($allemployee as $employees){
-                 $employees->service;
+                $employees->user->works;
+                $employees->service;
              }
  
              return response()->json([
@@ -917,7 +916,8 @@ class EmployeeController extends Controller
         if (!$employee) {
             return response()->json(['message' => 'Employee not found'], 404);
         }
-    
+        
+
         $notifications = $employee->notifications->map(function ($notification) {
             return $notification->data;
         });
@@ -928,6 +928,7 @@ class EmployeeController extends Controller
                 'message' => 'No notifications found'
             ], 200);
         }
+
     
         return response()->json([
             'status' => 'true',
