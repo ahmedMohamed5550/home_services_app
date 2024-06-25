@@ -1,3 +1,10 @@
+<?php 
+$is_Accepted=0;
+$is_Rejected=0;
+$is_Wating=0;
+?>
+
+
 @extends('layout')
 @section('body')
 @include('succsess')
@@ -27,9 +34,22 @@
           <td>{{   $order->price }}</td> 
           <td>{{   $order->price_after_discount }}</td>
           @if($order->status=="waiting")
+          <?php 
+          $is_Wating++
+          ?>
+ 
+          <td class="text-warning">{{   $order->status }}</td> 
+          @elseif ($order->status=="rejected")
+          <?php 
+          $is_Rejected++
+          ?>
           <td class="text-danger">{{   $order->status }}</td> 
           @else
+          <?php 
+          $is_Accepted++
+          ?>
           <td class="text-success">{{   $order->status }}</td> 
+
           @endif 
           
           <td>{{   $order->location }}</td> 
@@ -42,6 +62,73 @@
 
     </tbody>
   </table>
+
+  <br> <br>
+
+  <div class="row">
+    <div class="col-sm-4 grid-margin">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="text-success"> Completed</h5>
+          <div class="row">
+            <div class="col-8 col-sm-12 col-xl-8 my-auto">
+              <div class="d-flex d-sm-block d-md-flex align-items-center">
+                <h2 class="mb-0 text-success">{{ $is_Accepted }}</h2>
+              </div>
+              <h6 class="text-muted font-weight-normal">this is num of orders are completed</h6>
+              
+            </div>
+            <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
+             
+              <i class="icon-lg mdi mdi-check-circle text-success ms-auto"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-4 grid-margin">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="text-warning"> Waiting:</h5>
+          <div class="row">
+            <div class="col-8 col-sm-12 col-xl-8 my-auto">
+              <div class="d-flex d-sm-block d-md-flex align-items-center">
+                <h2 class="mb-0 text-warning">{{ $is_Wating }}</h2>
+              </div>
+              <h6 class="text-muted font-weight-normal">this is num of orders are waiting</h6>
+              
+            </div>
+            <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
+              <i class="icon-lg mdi mdi-clock-outline text-warning ms-auto"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-4 grid-margin">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="text-danger"> Rejected:</h5>
+          <div class="row">
+            <div class="col-8 col-sm-12 col-xl-8 my-auto">
+              <div class="d-flex d-sm-block d-md-flex align-items-center">
+                <h2 class="mb-0 text-danger">{{ $is_Rejected }}</h2>
+              </div>
+              <h6 class="text-muted font-weight-normal">this is num of orders are Rejected</h6>
+              
+            </div>
+            <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
+              <i class="icon-lg mdi mdi-close-circle-outline text-danger ms-auto"></i>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+   
+  </div>
+  
+  
 
 
 @endsection
