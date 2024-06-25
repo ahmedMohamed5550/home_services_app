@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('desc')->nullable();
             $table->string('image')->nullable();
             $table->date('expired_at');
-            $table->enum('type',['avialable','expired'])->default('avialable');
+            $table->enum('type',['available','expired'])->default('available');
             $table->timestamps();
         });
     }

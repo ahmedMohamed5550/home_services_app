@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\admin\employeeController;
+use App\Http\Controllers\admin\orderController;
 use App\Http\Controllers\admin\servicesController;
+use App\Http\Controllers\admin\SponserController;
 use App\Http\Controllers\admin\voucherController;
 use Illuminate\Support\Facades\Route;
 
@@ -69,5 +71,24 @@ Route::group(['prefix' => 'admin'], function () {
             Route::delete('/voucher/delete/{id}', 'deleteVoucher');
         });
     });
+    Route::controller(SponserController::class)->group(function () {
+        Route::middleware("isAdmin")->group(function () {
+            Route::get('/addSponser', 'showSponserForm');
+            Route::post('/sponser', 'storesponser');
+            Route::get('/sponser', 'getAllsponser');
+            Route::get('/sponser/show/{id}', 'showsponser');
+            Route::get('/sponser/edit/{id}', 'showEditForm');
+            Route::put('/sponser/edit/{id}', 'editsponser');
+            Route::delete('/sponser/delete/{id}', 'deletesponser');
+        });
+    });
+    Route::controller(orderController::class)->group(function () {
+        Route::middleware("isAdmin")->group(function () {
+            Route::get('/allOrder', 'showAllOrder');
+
+        });
+    });
+
+
 
 });

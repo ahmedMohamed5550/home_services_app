@@ -23,6 +23,7 @@ class AdminController extends Controller
         // echo "hi admin";
         $validator = Validator::make($request->all(), [
             'email' => 'required|string|email|max:255|unique:users',
+            'phone' => 'required|string',
             'password' => 'required|string|min:6',
             'userType' => 'required|string|in:admin',
             'name' => 'required|string|max:255'
@@ -33,17 +34,19 @@ class AdminController extends Controller
         }
 
         // Hash the password
-        $data = $request->only('email', 'password', 'userType', 'name');
+        $data = $request->only('email', 'password', 'userType', 'name', 'phone');
         $data['password'] = Hash::make($data['password']);
+
 
         // Create the user
         User::create($data);
 
         // Redirect to login page with a success message
-        return redirect(url('admin/login'))->with('success', 'User registered successfully');
+        return redirect(url('admin/employee/all'))->with('success', 'User registered successfully');
     }
 
-    public function showLoginForm(){
+    public function showLoginForm()
+    {
         return view("adminLogin");
         // echo "islam";
     }
@@ -63,15 +66,17 @@ class AdminController extends Controller
         $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
-            session(['user' => $user]);
-            return redirect(url('admin/redirect'))->with('success', 'User login successfully');
-        }
-        else
-        {
+
+            if ($user->userType == "admin") {
+                session(['user' => $user]);
+                return redirect(url('admin/redirect'))->with('success', 'User login successfully');
+            } else {
+
+                return redirect()->back()->withErrors(['email' => 'The provided credentials do not match our records.'])->withInput();
+            }
+        } else {
             return redirect()->back()->withErrors(['email' => 'The provided credentials do not match our records.'])->withInput();
-
         }
-
     }
 
     public function redirect()
@@ -88,11 +93,5 @@ class AdminController extends Controller
 
         // Redirect to the login page with a success message
         return redirect(url('/admin/login'))->with('success', 'Logged out successfully');
-
-
-
-
     }
-
-
 }
