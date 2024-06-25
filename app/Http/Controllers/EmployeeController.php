@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Employee;
 use App\Models\EmployeeWork;
+use App\Models\User;
 use App\Services\FeedbackService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
