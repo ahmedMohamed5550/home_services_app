@@ -812,6 +812,8 @@ class EmployeeController extends Controller
                 $employees->service;
                 $averageRating = $this->feedbackService->getAverageRatingPerEmployee($employees->id);
                 $totalRates = $employees->feedbacks->count();
+                // Remove the feedbacks relation to avoid including it in the response
+                unset($employees->feedbacks);
              }
  
              return response()->json([
