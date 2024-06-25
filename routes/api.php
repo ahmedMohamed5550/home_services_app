@@ -79,7 +79,7 @@ Route::controller(orderController::class)->group(function(){
 Route::controller(FeedbackController::class)->group(function () {
     Route::post('makeFeedback', 'makeFeedback');
     Route::get('getEmployeeFeedback/{id}', 'getEmployeeFeedback');
-    Route::get('getAverageRatingPerEmployee', 'getAverageRatingPerEmployee');
+    Route::get('getAverageRatingPerEmployee/{employee_id}', 'getAverageRatingPerEmployee');
     Route::delete('deleteFeedback/{id}', 'deleteFeedback');
     Route::post('editFeedback/{id}', 'editFeedback');
 });

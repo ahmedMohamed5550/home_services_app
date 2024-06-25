@@ -1330,7 +1330,6 @@
                         "multipart/form-data": {
                             "schema": {
                                 "required": [
-                                    "comment",
                                     "rating",
                                     "user_id",
                                     "employee_id"
@@ -1338,7 +1337,8 @@
                                 "properties": {
                                     "comment": {
                                         "description": "Feedback comment",
-                                        "type": "string"
+                                        "type": "string",
+                                        "nullable": true
                                     },
                                     "rating": {
                                         "description": "Rating (1-5)",
@@ -1450,52 +1450,6 @@
                     },
                     "401": {
                         "description": "No feedback found",
-                        "content": {
-                            "application/json": {
-                                "schema": {}
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/api/getAverageRatingPerEmployee": {
-            "get": {
-                "tags": [
-                    "Feedback"
-                ],
-                "summary": "Get average rating per employee",
-                "operationId": "37d52e3b279f1bf138cdccecdc4d5a3c",
-                "responses": {
-                    "200": {
-                        "description": "Success",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "properties": {
-                                            "employee_id": {
-                                                "type": "integer"
-                                            },
-                                            "average_rating": {
-                                                "type": "number",
-                                                "format": "float"
-                                            }
-                                        },
-                                        "type": "object"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
                         "content": {
                             "application/json": {
                                 "schema": {}

@@ -4,10 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Employee;
 use App\Models\EmployeeWork;
-use App\Models\Services;
-use App\Models\User;
-use Illuminate\Contracts\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use App\Services\FeedbackService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
@@ -16,6 +13,14 @@ use Throwable;
 
 class EmployeeController extends Controller
 {
+
+    protected $feedbackService;
+
+    public function __construct(FeedbackService $feedbackService)
+    {
+        $this->feedbackService = $feedbackService;
+    }
+
     /**
      * @OA\Post(
      *     path="/api/employee/employeeCompleteData",
@@ -414,6 +419,9 @@ class EmployeeController extends Controller
         $employeeImage = $employee->user->image;
         $employeePhone = $employee->user->phone;
 
+        // Get the average rating of the employee
+        $averageRating = $this->feedbackService->getAverageRatingPerEmployee($id);
+
         return response()->json([
             'status' => true,
             'message' => 'Employee profile updated successfully',
@@ -424,6 +432,8 @@ class EmployeeController extends Controller
                 'min_price' => $employee->min_price,
                 'status' => $employee->status,
                 'phone' => $employeePhone,
+                'average_rating' => $averageRating['average_rating'], // Include average rating 
+                'total_rates' => $employee->feedbacks->count(),      
             ],
         ], 200);
 
@@ -818,37 +828,6 @@ class EmployeeController extends Controller
      }
 
 
-    //  public function searchByName(Request $request)
-    //  {
-    //      $query = $request->input('query');
- 
-    //      if (!$query) {
-    //          return response()->json([
-    //              'status' => false,
-    //              'message' => 'No query provided',
-    //          ], 400);
-    //      }
- 
-    //      $searchResult = Employee::with(['user', 'service'])
-    //      ->whereHas('user', function ($q) use ($query) {
-    //          $q->where('name', 'like', '%' . $query . '%');
-    //      })
-    //      ->get();
- 
-    //      if ($searchResult->count() != 0) {
-    //          return response()->json([
-    //              'status' => true,
-    //              'message' => $searchResult,
-    //          ], 200);
-    //      } else {
-    //          return response()->json([
-    //              'status' => false,
-    //              'message' => 'No Result found',
-    //          ], 401);
-    //      }
-    //  }
-
-
 
     /**
      * @OA\Post(
@@ -1083,19 +1062,6 @@ class EmployeeController extends Controller
             'message' => $notifications
         ], 200);
     }
-
-
-    // public function searchByName(Request $request)
-    // {
-    //     $searchTerm = $request->input('search_term');
-
-    //     $results = Employee::searchByName($searchTerm);
-
-    //     return response()->json([
-    //         'status' => 'success',
-    //         'data' => $results,
-    //     ], 200);
-    // }
 
 
 

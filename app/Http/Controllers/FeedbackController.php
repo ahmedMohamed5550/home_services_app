@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Feedback;
+use App\Services\FeedbackService;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -11,6 +12,20 @@ use Throwable;
 
 class FeedbackController extends Controller
 {
+
+    protected $feedbackService;
+
+    public function __construct(FeedbackService $feedbackService)
+    {
+        $this->feedbackService = $feedbackService;
+    }
+
+    public function getAverageRatingPerEmployee($employeeId)
+    {
+        $averageRating = $this->feedbackService->getAverageRatingPerEmployee($employeeId);
+        return response()->json($averageRating, 200);
+    }
+
     /**
      * @OA\Post(
      *     path="/api/makeFeedback",
@@ -24,8 +39,9 @@ class FeedbackController extends Controller
      *             @OA\Schema(
      *                 @OA\Property(
      *                     property="comment",
-     *                     type="string",
-     *                     description="Feedback comment"
+     *                      type="string",
+     *                     description="Feedback comment",
+     *                     nullable=true
      *                 ),
      *                 @OA\Property(
      *                     property="rating",
@@ -42,7 +58,7 @@ class FeedbackController extends Controller
      *                     type="integer",
      *                     description="Employee ID"
      *                 ),
-     *                 required={"comment", "rating", "user_id", "employee_id"}
+     *                 required={"rating", "user_id", "employee_id"}
      *             )
      *         )
      *     ),
@@ -55,7 +71,7 @@ class FeedbackController extends Controller
 
         // validation to input
         $validator = validator::make($request->all(), [
-            'comment' => 'required|string',
+            'comment' => 'nullable',
             'rating' => 'required|in:1,2,3,4,5',
             'user_id' => 'required|integer|exists:users,id',
             'employee_id' => 'required|integer|exists:employees,id',
@@ -70,7 +86,7 @@ class FeedbackController extends Controller
         }
 
         $feedback = Feedback::create([
-            'comment' => $request->comment,
+            'comment' => $request->comment ?? "none",
             'rating' => $request->rating,
             'user_id' => $request->user_id, // auth by user id
             'employee_id' => $request->employee_id,
@@ -188,40 +204,95 @@ class FeedbackController extends Controller
     }
 
 
-    /**
-     * @OA\Get(
-     *     path="/api/getAverageRatingPerEmployee",
-     *     summary="Get average rating per employee",
-     *     tags={"Feedback"},
-     *     security={{"bearerAuth":{}}},
-     *     @OA\Response(
-     *         response=200,
-     *         description="Success",
-     *         @OA\JsonContent(
-     *             type="array",
-     *             @OA\Items(
-     *                 @OA\Property(property="employee_id", type="integer"),
-     *                 @OA\Property(property="average_rating", type="number", format="float"),
-     *             )
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=401,
-     *         description="Unauthorized",
-     *         @OA\JsonContent()
-     *     ),
-     * )
-     */
-    public function  getAverageRatingPerEmployee()
-    {
+    // /**
+    //  * @OA\Get(
+    //  *     path="/api/getAverageRatingPerEmployee/{employee_id}",
+    //  *     summary="Show average rating for employee by ID",
+    //  *     tags={"Feedback"},
+    //  *     security={{"bearerAuth":{}}},
+    //  *     @OA\Parameter(
+    //  *         name="employee_id",
+    //  *         in="path",
+    //  *         required=true,
+    //  *         description="ID of the employee to show average rating to it",
+    //  *         @OA\Schema(
+    //  *             type="integer",
+    //  *         ),
+    //  *     ),
+    //  *     @OA\Response(
+    //  *         response=200,
+    //  *         description="Success",
+    //  *         @OA\JsonContent(
+    //  *             type="object",
+    //  *             @OA\Property(property="status", type="boolean", example=true),
+    //  *             @OA\Property(property="message", type="array", @OA\Items(type="object"))
+    //  *         )
+    //  *     ),
+    //  *     @OA\Response(
+    //  *         response=404,
+    //  *         description="Employee not found",
+    //  *         @OA\JsonContent(
+    //  *             type="object",
+    //  *             @OA\Property(property="status", type="boolean", example=false),
+    //  *             @OA\Property(property="message", type="string", example="Employee not found")
+    //  *         )
+    //  *     )
+    //  * )
+    //  */
 
-        // Retrieve rating counts for each employee
-        $averageRatings = Feedback::select('employee_id', DB::raw('SUM(rating) / COUNT(*) AS average_rating'))
-            ->groupBy('employee_id')
-            ->get();
 
-        return response()->json($averageRatings);
-    }
+    //  public function getAverageRatingPerEmployee($employeeId)
+    //  {
+    //      // Retrieve rating counts for the specific employee
+    //      $averageRating = Feedback::where('employee_id', $employeeId)
+    //          ->select(DB::raw('SUM(rating) / COUNT(*) AS average_rating'))
+    //          ->groupBy('employee_id')
+    //          ->first(); // Use first() instead of get() to get a single record
+ 
+    //      // Extract the average rating value
+    //      $averageRatingValue = $averageRating ? $averageRating->average_rating : null;
+ 
+    //      return response()->json(['average_rating' => $averageRatingValue],200);
+    //  }
+
+
+
+    // /**
+    //  * @OA\Get(
+    //  *     path="/api/getAverageRatingPerEmployee",
+    //  *     summary="Get average rating per employee",
+    //  *     tags={"Feedback"},
+    //  *     security={{"bearerAuth":{}}},
+    //  *     @OA\Response(
+    //  *         response=200,
+    //  *         description="Success",
+    //  *         @OA\JsonContent(
+    //  *             type="array",
+    //  *             @OA\Items(
+    //  *                 @OA\Property(property="employee_id", type="integer"),
+    //  *                 @OA\Property(property="average_rating", type="number", format="float"),
+    //  *             )
+    //  *         )
+    //  *     ),
+    //  *     @OA\Response(
+    //  *         response=401,
+    //  *         description="Unauthorized",
+    //  *         @OA\JsonContent()
+    //  *     ),
+    //  * )
+    //  */
+
+
+    // public function  getAverageRatingPerEmployee()
+    // {
+
+    //     // Retrieve rating counts for each employee
+    //     $averageRatings = Feedback::select('employee_id', DB::raw('SUM(rating) / COUNT(*) AS average_rating'))
+    //         ->groupBy('employee_id')
+    //         ->get();
+
+    //     return response()->json($averageRatings);
+    // }
 
 
 

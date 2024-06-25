@@ -15,6 +15,7 @@ class Feedback extends Model
         'user_id',
         'employee_id',
     ];
+    
     public function user(){
         return $this->BelongsTo(User::class,'user_id', 'id');
     }
