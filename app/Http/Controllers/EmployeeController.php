@@ -810,11 +810,15 @@ class EmployeeController extends Controller
              foreach($allemployee as $employees){
                 $employees->user->works;
                 $employees->service;
+                $averageRating = $this->feedbackService->getAverageRatingPerEmployee($employees->id);
+                $totalRates = $employees->feedbacks->count();
              }
  
              return response()->json([
                  'status' => true,
                  'allemployee' => $allemployee,
+                 'average_rating' => $averageRating['average_rating'], // Include average rating 
+                'total_rates' => $totalRates,    
              ],200);
          }
  
