@@ -6,6 +6,8 @@ use App\Models\Employee;
 use App\Models\EmployeeWork;
 use App\Models\Services;
 use App\Models\User;
+use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
@@ -814,6 +816,152 @@ class EmployeeController extends Controller
  
  
      }
+
+
+    //  public function searchByName(Request $request)
+    //  {
+    //      $query = $request->input('query');
+ 
+    //      if (!$query) {
+    //          return response()->json([
+    //              'status' => false,
+    //              'message' => 'No query provided',
+    //          ], 400);
+    //      }
+ 
+    //      $searchResult = Employee::with(['user', 'service'])
+    //      ->whereHas('user', function ($q) use ($query) {
+    //          $q->where('name', 'like', '%' . $query . '%');
+    //      })
+    //      ->get();
+ 
+    //      if ($searchResult->count() != 0) {
+    //          return response()->json([
+    //              'status' => true,
+    //              'message' => $searchResult,
+    //          ], 200);
+    //      } else {
+    //          return response()->json([
+    //              'status' => false,
+    //              'message' => 'No Result found',
+    //          ], 401);
+    //      }
+    //  }
+
+
+
+    /**
+     * @OA\Post(
+     *     path="/api/employee/search",
+     *     summary="Add details to employee",
+     *     tags={"Employee"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=false,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 @OA\Property(
+     *                     property="query",
+     *                     type="string",
+     *                     description="what is the word you want to search by it"
+     *                 ),
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="search retrieve response successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="status",
+     *                 type="boolean",
+     *                 example=true
+     *             ),
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="successfully"
+     *             ),
+     *             @OA\Property(
+     *                 property="employee",
+     *                 type="object"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Validation error",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="status",
+     *                 type="boolean",
+     *                 example=false
+     *             ),
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="object"
+     *             )
+     *         )
+     *     )
+     * )
+     */
+
+    //  this function to search in employee model by name in user model and return service relation in employee model with the employee name resonse
+
+    public function searchByName(Request $request)
+    {
+        $query = $request->input('query');
+
+        if (!$query) {
+            return response()->json([
+                'status' => false,
+                'message' => 'No query provided',
+            ], 400);
+        }
+
+        $searchResult = Employee::whereHas('user', function ($q) use ($query) {
+                $q->where('name', 'like', '%' . $query . '%');
+        })->get();
+
+        if ($searchResult->count() != 0) {
+            // Modify the response format as per your requirements
+            return response()->json([
+                'status' => true,
+                'allemployee' => $searchResult->map(function ($employee) {
+                    return [
+                        'employee' => [
+                            'id' => $employee->id,
+                            'desc' => $employee->desc,
+                            'min_price' => $employee->min_price,
+                            'status' => $employee->status,
+                        ],
+                        'user' => [
+                            'id' => $employee->user->id,
+                            'name' => $employee->user->name,
+                            'email' => $employee->user->email,
+                            'phone' =>$employee->user->phone,
+                            'image' =>$employee->user->image ,
+                            'works' => $employee->user->works, // Assuming 'works' is a method in User model
+                        ],
+                        'service' => [
+                            'id' => $employee->service->id,
+                            'name' => $employee->service->name,
+                        ]
+                    ];
+                }),
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => 'No Result found',
+            ], 401);
+        }
+    }
+
+
+
+
 
 
     /**

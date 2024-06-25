@@ -1107,6 +1107,80 @@
                 ]
             }
         },
+        "/api/employee/search": {
+            "post": {
+                "tags": [
+                    "Employee"
+                ],
+                "summary": "Add details to employee",
+                "operationId": "4c9136c85457820ba61480e2ef28c7e5",
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "query": {
+                                        "description": "what is the word you want to search by it",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "search retrieve response successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "successfully"
+                                        },
+                                        "employee": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/employee/getTotalOrders/{id}/orders/total": {
             "get": {
                 "tags": [

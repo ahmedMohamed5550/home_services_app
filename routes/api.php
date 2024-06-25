@@ -62,7 +62,7 @@ Route::controller(EmployeeController::class)->prefix('employee')->group(function
     Route::get("/showEmployeeLastWorks/{id}",'showEmployeeLastWorks');
     Route::post('/changeEmployeeStatus/{id}', 'changeEmployeeStatus');
     Route::get("/notifications/{id}",'notifications');
-
+    Route::post('/search','searchByName');
 });
 
 Route::controller(orderController::class)->group(function(){
