@@ -135,7 +135,7 @@ class FeedbackController extends Controller
     {
         try {
             $feedbacks = Feedback::where('employee_id', $id)
-                ->with('user', 'employee.user', 'employee.service')
+                ->with('user')
                 ->get();
 
             if ($feedbacks->isNotEmpty()) {
