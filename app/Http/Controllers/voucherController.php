@@ -131,26 +131,64 @@ class voucherController extends Controller
         return 0;
     }
 
-    // public function couponStore(Request $request){
 
-    //     $voucher = Voucher::where('code', $request->code)->first();
+    /**
+     * @OA\Get(
+     *     path="/api/showVouchersIsUsedByUser/{user_id}",
+     *     summary="Show all locations",
+     *     description="Show all vouchers for a user used by user ID",
+     *     tags={"Vouchers"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="user_id",
+     *         in="path",
+     *         description="ID of the user to show all vouchers is used",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Show vouchers successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="boolean", example=true),
+     *             @OA\Property(property="locations", type="array", @OA\Items(type="object"))
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="No vouchers found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="No locations found")
+     *         )
+     *     )
+     * )
+     */
 
-    //     if (!$voucher) {
-    //         return response()->json(['error' => 'Invalid voucher code, Please try again'], 404);
-    //     }
-
-    //     $totalPrice = Order::where('user_id',1)->where('id', null)->sum('price');
-
-    //     $discountValue = $voucher->discount($totalPrice);
-
-    //     return response()->json([
-    //         'success' => true,
-    //         'message' => 'voucher successfully applied',
-    //         'coupon' => [
-    //             // 'id' => $voucher->id,
-    //             'code' => $voucher->code,
-    //             'value' => $discountValue,
-    //         ],
-    //     ]);
-    // }
+     public function showVouchersIsUsedByUser($id)
+     {
+         $user_vouchers = UserVoucher::where('user_id', $id)->get();
+     
+         if ($user_vouchers->count() != 0) {
+             // Extract voucher objects
+             $vouchers = $user_vouchers->map(function($user_voucher) {
+                 return $user_voucher->voucher;
+             });
+     
+             return response()->json([
+                 'status' => true,
+                 'vouchers' => $vouchers,
+             ], 200);
+         } else {
+             return response()->json([
+                 'status' => false,
+                 'message' => 'failed',
+             ], 404);
+         }
+     }
+     
 }

@@ -87,6 +87,8 @@ Route::controller(FeedbackController::class)->group(function () {
 Route::controller(voucherController::class)->group(function () {
     Route::post('addVoucher', 'addVoucher');
     Route::get('vouchers','index');
+    Route::get('showVouchersIsUsedByUser/{id}', 'showVouchersIsUsedByUser');
+
 });
 
 
