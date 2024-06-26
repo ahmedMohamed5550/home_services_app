@@ -2844,7 +2844,7 @@
                     {
                         "name": "status",
                         "in": "query",
-                        "description": "status to voucher between [active,inactive,expired]",
+                        "description": "status to voucher between [inactive,used,expired]",
                         "schema": {
                             "type": "string"
                         }

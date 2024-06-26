@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\UserVoucher;
 use App\Models\Voucher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -40,10 +41,12 @@ class voucherController extends Controller
      public function index()
      {
          $voucher = Voucher::all();
+        //  $user_voucher = UserVoucher::all()->count();
          if($voucher->count() != 0){
              return response()->json([
                  'status' => true,
-                 'vouchers' => $voucher
+                 'vouchers' => $voucher,
+                //  'user_voucher' => $user_voucher,
              ],200);
          }
          else{
@@ -85,7 +88,7 @@ class voucherController extends Controller
      * @OA\Parameter(
      * name="status",
      * in="query",
-     * description="status to voucher between [active,inactive,expired]",
+     * description="status to voucher between [inactive,used,expired]",
      * @OA\Schema(type="string")
      * ),
     * @OA\Parameter(
@@ -108,7 +111,7 @@ class voucherController extends Controller
             'code'=>'string|required',
             'type'=>'required|in:fixed,percent',
             'discount'=>'required|numeric',
-            'status'=>'required|in:active,inactive,expired',
+            'status'=>'required|in:inactive,used,expired',
             'expired_at' => 'required|date_format:Y-m-d',
         ]);
         $data=$request->all();

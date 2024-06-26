@@ -11,23 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('vouchers', function (Blueprint $table) {
+        Schema::create('users_vouchers', function (Blueprint $table) {
             $table->id();
-            $table->string('code')->unique();
-            $table->enum('type',['fixed','percent'])->default('fixed');
-            $table->integer('discount');
-            $table->enum('status',['active','used','expired'])->default('active');
-            $table->date('expired_at');
+            $table->foreignId('user_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('voucher_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->enum('status',['used','avaialble'])->default('avaialble');
             $table->timestamps();
         });
     }
 
     /**
      * Reverse the migrations.
-     *
      */
     public function down(): void
     {
-        Schema::dropIfExists('vouchers');
+        Schema::dropIfExists('users_vouchers');
     }
 };

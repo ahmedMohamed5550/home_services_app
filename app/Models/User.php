@@ -39,6 +39,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(EmployeeWork::class);
     }
 
+    public function vouchers()
+    {
+        return $this->belongsToMany(Voucher::class,'UserVoucher');
+    }
+
 
     /**
      * The attributes that should be hidden for serialization.
