@@ -2842,14 +2842,6 @@
                         }
                     },
                     {
-                        "name": "status",
-                        "in": "query",
-                        "description": "status to voucher between [inactive,used,expired]",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
                         "name": "expired_at",
                         "in": "query",
                         "description": "voucher expired at",

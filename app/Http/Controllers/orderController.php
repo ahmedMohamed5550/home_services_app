@@ -132,7 +132,7 @@ class orderController extends Controller
             // Attempt to find a valid voucher
             $voucher = Voucher::where('code', $request->voucher_code)
                               ->where('expired_at', '>', now())
-                              ->where('status', 'inactive')
+                              ->where('status', 'avialable')
                               ->first();
 
             // If a valid voucher is found, apply discounts and check if this user used it before this time or no

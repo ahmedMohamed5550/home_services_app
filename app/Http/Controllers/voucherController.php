@@ -85,12 +85,6 @@ class voucherController extends Controller
      * required=true,
      * @OA\Schema(type="integer")
      * ),
-     * @OA\Parameter(
-     * name="status",
-     * in="query",
-     * description="status to voucher between [inactive,used,expired]",
-     * @OA\Schema(type="string")
-     * ),
     * @OA\Parameter(
      * name="expired_at",
      * in="query",
@@ -111,7 +105,6 @@ class voucherController extends Controller
             'code'=>'string|required',
             'type'=>'required|in:fixed,percent',
             'discount'=>'required|numeric',
-            'status'=>'required|in:inactive,used,expired',
             'expired_at' => 'required|date_format:Y-m-d',
         ]);
         $data=$request->all();

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('code')->unique();
             $table->enum('type',['fixed','percent'])->default('fixed');
             $table->integer('discount');
-            $table->enum('status',['inactive','used','expired'])->default('inactive');
+            $table->enum('status',['avialable','expired'])->default('avialable');
             $table->date('expired_at');
             $table->timestamps();
         });

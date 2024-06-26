@@ -32,7 +32,7 @@ class UpdateVoucherStatus extends Command
         $now = Carbon::now();
 
         DB::table('vouchers')
-            ->where('status', 'inactive')
+            ->where('status', 'avialable')
             ->whereDate('expired_at', '<', $now)
             ->update(['status' => 'expired']);
 
