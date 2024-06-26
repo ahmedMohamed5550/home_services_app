@@ -16,7 +16,7 @@ return new class extends Migration
             $table->decimal('price');
             $table->decimal('price_after_discount')->nullable();
             $table->decimal('total_discount')->nullable();
-            $table->enum('status',['accepted','waiting','rejected'])->default('waiting');
+            $table->enum('status', ['accepted', 'waiting', 'rejected', 'completed'])->default('waiting');
             $table->text('location');
             $table->text('order_descriptions');
             $table->dateTime('date_of_delivery')->nullable();

@@ -11,6 +11,7 @@ use App\Notifications\sendNotifyToEmployeeAboutUserResponseOrder;
 use App\Notifications\sendNotifyToUserAboutEmployeeResponse;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
@@ -143,6 +144,9 @@ class orderController extends Controller
     }
 
     $order->save();
+
+    // Call the CompleteOrders command
+    Artisan::call('orders:complete');
 
     // who is send to a notification
     $order_employee = Employee::where('id',$order->employee_id)->get();
