@@ -56,6 +56,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::middleware("isAdmin")->group(function () {
             Route::get('/employee/all', 'getUserEmployeeData');
             Route::get('/checkByAdmin/{employeeId}/{status}', 'checkByAdmin');
+            Route::get("employee/show/{id}","showEmployee");
         });
     });
 
@@ -85,6 +86,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::controller(orderController::class)->group(function () {
         Route::middleware("isAdmin")->group(function () {
             Route::get('/allOrder', 'showAllOrder');
+           
 
         });
     });

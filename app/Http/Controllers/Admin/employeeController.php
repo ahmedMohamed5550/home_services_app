@@ -34,4 +34,15 @@ class employeeController extends Controller
 
         return redirect(url('admin/employee/all'))->with('succsess', 'Employee status updated successfully.');
     }
+
+    public function showEmployee($id)
+    {
+        $employee = Employee::join('users', 'employees.user_id', '=', 'users.id')
+            ->select('employees.*', 'users.name', 'users.email', 'users.phone')
+            ->where('users.userType', 'employee')
+            ->where('employees.checkByAdmin', 'waiting')
+            ->where('employees.id', $id)
+            ->get();
+        return view("Employee.show", compact("employee"));
+    }
 }

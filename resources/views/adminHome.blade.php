@@ -37,6 +37,7 @@
                   <th> national ID </th>
                   <th> Status </th>
                   <th> checkByAdmin </th>
+                  <th> show </th>
                 </tr>
               </thead>
               <tbody>
@@ -64,6 +65,8 @@
                     <td> {{ $employee->checkByAdmin  }} </td>
                     <td><a href="{{ url("admin/checkByAdmin/{$employee->id}/accepted") }}" class="badge badge-outline-success">Accepted</a></td>
                     <td><a href="{{ url("admin/checkByAdmin/{$employee->id}/rejected") }}" class="badge badge-outline-danger">Rejected</a></td>
+                    <td><a href="{{ url("admin/employee/show/$employee->id")}}" class="badge badge-outline-warning">show</a></td>
+
                   </tr>
 
 
