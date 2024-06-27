@@ -1332,7 +1332,8 @@
                                 "required": [
                                     "rating",
                                     "user_id",
-                                    "employee_id"
+                                    "employee_id",
+                                    "order_id"
                                 ],
                                 "properties": {
                                     "comment": {
@@ -1350,6 +1351,10 @@
                                     },
                                     "employee_id": {
                                         "description": "Employee ID",
+                                        "type": "integer"
+                                    },
+                                    "order_id": {
+                                        "description": "Order ID",
                                         "type": "integer"
                                     }
                                 },

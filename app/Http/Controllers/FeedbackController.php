@@ -58,7 +58,12 @@ class FeedbackController extends Controller
      *                     type="integer",
      *                     description="Employee ID"
      *                 ),
-     *                 required={"rating", "user_id", "employee_id"}
+     *                 @OA\Property(
+     *                     property="order_id",
+     *                     type="integer",
+     *                     description="Order ID"
+     *                 ),
+     *                 required={"rating", "user_id", "employee_id","order_id"}
      *             )
      *         )
      *     ),
@@ -75,6 +80,7 @@ class FeedbackController extends Controller
             'rating' => 'required|in:1,2,3,4,5',
             'user_id' => 'required|integer|exists:users,id',
             'employee_id' => 'required|integer|exists:employees,id',
+            'order_id' => 'required|integer|exists:orders,id',
         ]);
 
         // return message failed if validation is false
@@ -85,18 +91,38 @@ class FeedbackController extends Controller
             ], 401);
         }
 
-        $feedback = Feedback::create([
-            'comment' => $request->comment ?? "none",
-            'rating' => $request->rating,
-            'user_id' => $request->user_id, // auth by user id
-            'employee_id' => $request->employee_id,
-        ]);
+        $oneFeedBackToOneUser = Feedback::where('order_id',$request->order_id)->first();
 
-        if ($feedback) {
+        if($oneFeedBackToOneUser){
             return response()->json([
-                'status' => 'true',
-                'message' => 'make feedback done',
-            ], 200);
+                'status' => false,
+                'message' => 'this order take feedback previously',
+            ], 404);
+        }
+
+        else{
+
+            $feedback = Feedback::create([
+                'comment' => $request->comment,
+                'rating' => $request->rating,
+                'user_id' => $request->user_id, // auth by user id
+                'employee_id' => $request->employee_id,
+                'order_id' => $request->order_id,
+            ]);
+    
+            if ($feedback) {
+                return response()->json([
+                    'status' => true,
+                    'message' => 'make feedback done',
+                ], 200);
+            }
+
+            else{
+                return response()->json([
+                    'status' => false,
+                    'message' => 'something wrong',
+                ], 404);
+            }
         }
     }
 
