@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('feedbacks', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->text('comment');
+            $table->text('comment')->nullable();
             $table->enum('rating',[1,2,3,4,5]);
             $table->foreignId('user_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('employee_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('order_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

@@ -14,6 +14,7 @@ class Feedback extends Model
         'rating',
         'user_id',
         'employee_id',
+        'order_id',
     ];
     
     public function user(){
@@ -23,4 +24,9 @@ class Feedback extends Model
     public function employee(){
         return $this->BelongsTo(Employee::class);
     }
+
+    public function order(){
+        return $this->BelongsTo(Order::class);
+    }
+
 }

@@ -20,8 +20,30 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view("welcome");
+    return view('welcome');
 });
+
+Route::get('/privacy', function () {
+    return view('privacy');
+});
+
+Route::get('/services', function () {
+    return view('services');
+});
+
+Route::get('/termsAndCondition', function () {
+    return view('termsAndCondition');
+});
+
+Route::get('/who', function () {
+    return view('who');
+});
+
+Route::get('/questions', function () {
+    return view('questions');
+});
+
+
 
 Route::group(['prefix' => 'admin'], function () {
 

@@ -33,4 +33,8 @@ class Order extends Model
         return $this->BelongsTo(Voucher::class);
     }
 
+    public function feedback(){
+        return $this->BelongsTo(Feedback::class);
+    }
+
 }
