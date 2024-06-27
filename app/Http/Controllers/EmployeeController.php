@@ -214,22 +214,27 @@ class EmployeeController extends Controller
         // store copy of image in public
         Artisan::call('storage:link');
 
-        return response()->json(['status' => true, 'message' => 'Add Detailes to Profile successfully','employee' => $employee], 200);
+        return response()->json([
+            'status' => true,
+            'message' => 'Add Detailes to Profile successfully',
+            'employee' => $employee,
+            // 'user' => $employee->user,
+            // 'works' => $employee->user->works,
+        ], 200);
     }
 
 
     /**
      * @OA\Post(
-     *     path="/api/employee/updateWorksImage/{id}",
+     *     path="/api/employee/updateWorksImage/{user_id}",
      *     summary="Edit an employee works image",
-     *     operationId="updateWorksImage",
      *     tags={"Employee"},
      *     security={{"bearerAuth":{}}},
      *     @OA\Parameter(
-     *         name="id",
+     *         name="user_id",
      *         in="path",
      *         required=true,
-     *         description="ID of the employee",
+     *         description="ID of the user",
      *         @OA\Schema(
      *             type="integer"
      *         )
@@ -305,74 +310,159 @@ class EmployeeController extends Controller
      */
 
 
-     public function updateWorksImage(Request $request, $id)
+     public function updateWorksImage(Request $request, $user_id)
      {
          $validatedData = Validator::make($request->all(), [
              'works' => 'nullable|array|max:4',
              'works.*.image' => 'nullable|image|mimes:jpeg,png,jpg,gif',
          ]);
-
+     
          if ($validatedData->fails()) {
              return response()->json(['status' => false, 'message' => $validatedData->errors()], 401);
          }
-
+     
          if ($request->has('works')) {
              $works = $request->works;
-
-             // Ensure there are exactly 4 entries, filling with null values if necessary
              $works = array_pad($works, 4, ['image' => null]);
-
-             // Retrieve existing works for the user
-             $existingWorks = EmployeeWork::where('user_id', $id)->get();
-
+             $existingWorks = EmployeeWork::where('user_id', $user_id)->get();
+     
+             // Check if user exists
+             if ($existingWorks->isEmpty()) {
+                 return response()->json(['status' => false, 'message' => 'User not found'], 404);
+             }
+     
+             $updateData = [];
+             $newWorks = [];
+     
              foreach ($works as $index => $work) {
                  $workImageUrl = null;
-
+     
                  if (isset($work['image']) && $work['image']) {
                      $workImage = $work['image'];
                      $workImagePath = $workImage->store('employee_works', 'public');
                      $workImageUrl = Storage::url($workImagePath);
                  }
-
+     
                  if (isset($existingWorks[$index])) {
-                     // Update existing work
                      $existingWork = $existingWorks[$index];
-
-                     // Delete the old image if a new one is uploaded
                      if ($existingWork->image_url && $workImageUrl) {
                          $oldImagePath = str_replace('/storage', 'public', parse_url($existingWork->image_url, PHP_URL_PATH));
                          Storage::delete($oldImagePath);
                      }
-
-                     $existingWork->update([
+                     $updateData[] = [
+                         'id' => $existingWork->id,
                          'image_url' => $workImageUrl ?? $existingWork->image_url,
-                     ]);
+                     ];
                  } else {
-                     // Create new work
-                     EmployeeWork::create([
-                         'user_id' => $id,
+                     $newWorks[] = [
+                         'user_id' => $user_id,
                          'image_url' => $workImageUrl,
+                     ];
+                 }
+             }
+     
+             // Perform bulk update
+             if (!empty($updateData)) {
+                 foreach ($updateData as $data) {
+                     EmployeeWork::where('id', $data['id'])->update([
+                         'image_url' => $data['image_url']
                      ]);
                  }
              }
-
-             // If there are more existing works than provided, delete the excess and their images
-             for ($i = count($works); $i < count($existingWorks); $i++) {
-                 $work = $existingWorks[$i];
-                 if ($work->image_url) {
-                     // Extract the path from the URL
-                     $workImagePath = str_replace('/storage', 'public', parse_url($work->image_url, PHP_URL_PATH));
-                     Storage::delete($workImagePath);
-                 }
-                 $work->delete();
+     
+             // Perform bulk insert
+             if (!empty($newWorks)) {
+                 EmployeeWork::insert($newWorks);
              }
-
-             // Run the storage link command once after processing all works
+     
+             // Delete excess works
+             if (count($existingWorks) > count($works)) {
+                 $excessWorks = $existingWorks->slice(count($works));
+                 foreach ($excessWorks as $work) {
+                     if ($work->image_url) {
+                         $workImagePath = str_replace('/storage', 'public', parse_url($work->image_url, PHP_URL_PATH));
+                         Storage::delete($workImagePath);
+                     }
+                     $work->delete();
+                 }
+             }
+     
              Artisan::call('storage:link');
          }
-
+     
          return response()->json(['status' => true, 'message' => 'Edit employee works image successfully'], 200);
      }
+
+
+    //  public function updateWorksImage(Request $request, $user_id)
+    //  {
+    //      $validatedData = Validator::make($request->all(), [
+    //          'works' => 'nullable|array|max:4',
+    //          'works.*.image' => 'nullable|image|mimes:jpeg,png,jpg,gif',
+    //         //  'user_id' => 'required|exists:users,id',
+    //      ]);
+
+    //      if ($validatedData->fails()) {
+    //          return response()->json(['status' => false, 'message' => $validatedData->errors()], 401);
+    //      }
+
+    //      if ($request->has('works')) {
+    //          $works = $request->works;
+
+    //          // Ensure there are exactly 4 entries, filling with null values if necessary
+    //          $works = array_pad($works, 4, ['image' => null]);
+
+    //          // Retrieve existing works for the user
+    //          $existingWorks = EmployeeWork::where('user_id', $user_id)->get();
+
+    //          foreach ($works as $index => $work) {
+    //              $workImageUrl = null;
+
+    //              if (isset($work['image']) && $work['image']) {
+    //                  $workImage = $work['image'];
+    //                  $workImagePath = $workImage->store('employee_works', 'public');
+    //                  $workImageUrl = Storage::url($workImagePath);
+    //              }
+
+    //              if (isset($existingWorks[$index])) {
+    //                  // Update existing work
+    //                  $existingWork = $existingWorks[$index];
+
+    //                  // Delete the old image if a new one is uploaded
+    //                  if ($existingWork->image_url && $workImageUrl) {
+    //                      $oldImagePath = str_replace('/storage', 'public', parse_url($existingWork->image_url, PHP_URL_PATH));
+    //                      Storage::delete($oldImagePath);
+    //                  }
+
+    //                  $existingWork->update([
+    //                      'image_url' => $workImageUrl ?? $existingWork->image_url,
+    //                  ]);
+    //              } else {
+    //                  // Create new work
+    //                  EmployeeWork::create([
+    //                      'user_id' => $user_id,
+    //                      'image_url' => $workImageUrl,
+    //                  ]);
+    //              }
+    //          }
+
+    //          // If there are more existing works than provided, delete the excess and their images
+    //          for ($i = count($works); $i < count($existingWorks); $i++) {
+    //              $work = $existingWorks[$i];
+    //              if ($work->image_url) {
+    //                  // Extract the path from the URL
+    //                  $workImagePath = str_replace('/storage', 'public', parse_url($work->image_url, PHP_URL_PATH));
+    //                  Storage::delete($workImagePath);
+    //              }
+    //              $work->delete();
+    //          }
+
+    //          // Run the storage link command once after processing all works
+    //          Artisan::call('storage:link');
+    //      }
+
+    //      return response()->json(['status' => true, 'message' => 'Edit employee works image successfully'], 200);
+    //  }
 
 
     /**

@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('voucher_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
-            $table->enum('status',['used','avaialble'])->default('avaialble');
             $table->timestamps();
         });
     }

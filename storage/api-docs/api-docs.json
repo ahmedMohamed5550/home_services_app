@@ -527,18 +527,18 @@
                 ]
             }
         },
-        "/api/employee/updateWorksImage/{id}": {
+        "/api/employee/updateWorksImage/{user_id}": {
             "post": {
                 "tags": [
                     "Employee"
                 ],
                 "summary": "Edit an employee works image",
-                "operationId": "updateWorksImage",
+                "operationId": "c1822af1deb09f2dd47b07a37fb470d5",
                 "parameters": [
                     {
-                        "name": "id",
+                        "name": "user_id",
                         "in": "path",
-                        "description": "ID of the employee",
+                        "description": "ID of the user",
                         "required": true,
                         "schema": {
                             "type": "integer"

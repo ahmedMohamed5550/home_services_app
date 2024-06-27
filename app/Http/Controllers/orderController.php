@@ -156,7 +156,6 @@ class orderController extends Controller
                 UserVoucher::create([
                     'user_id' => $order->user_id,
                     'voucher_id' => $order->voucher_id,
-                    'status' => 'used',
                 ]);
             } else {
                 throw new \Exception('Voucher code is unavailable or expired.');
