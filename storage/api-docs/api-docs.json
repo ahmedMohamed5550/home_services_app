@@ -527,6 +527,142 @@
                 ]
             }
         },
+        "/api/employee/updateEmployeeCompleteData/{id}": {
+            "post": {
+                "tags": [
+                    "Employee"
+                ],
+                "summary": "Update details of an employee",
+                "operationId": "6ad2c2451ded040b0dea5af036770cb8",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the employee to update",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "desc": {
+                                        "description": "Description of the employee",
+                                        "type": "string"
+                                    },
+                                    "imageSSN": {
+                                        "description": "Image of the SSN",
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "livePhoto": {
+                                        "description": "Live photo of the employee",
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "nationalId": {
+                                        "description": "National ID of the employee",
+                                        "type": "string"
+                                    },
+                                    "min_price": {
+                                        "description": "Minimum price of the employee",
+                                        "type": "integer"
+                                    },
+                                    "user_id": {
+                                        "description": "User ID of the employee",
+                                        "type": "integer"
+                                    },
+                                    "service_id": {
+                                        "description": "Service ID of the employee",
+                                        "type": "integer"
+                                    },
+                                    "works[0][image]": {
+                                        "description": "Image work 1",
+                                        "type": "string",
+                                        "format": "binary",
+                                        "nullable": true
+                                    },
+                                    "works[1][image]": {
+                                        "description": "Image work 2",
+                                        "type": "string",
+                                        "format": "binary",
+                                        "nullable": true
+                                    },
+                                    "works[2][image]": {
+                                        "description": "Image work 3",
+                                        "type": "string",
+                                        "format": "binary",
+                                        "nullable": true
+                                    },
+                                    "works[3][image]": {
+                                        "description": "Image work 4",
+                                        "type": "string",
+                                        "format": "binary",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Employee details updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Employee profile details updated successfully"
+                                        },
+                                        "employee": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/employee/updateWorksImage/{user_id}": {
             "post": {
                 "tags": [

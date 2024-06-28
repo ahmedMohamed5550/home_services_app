@@ -224,6 +224,249 @@ class EmployeeController extends Controller
     }
 
 
+
+    /**
+     * @OA\Post(
+     *     path="/api/employee/updateEmployeeCompleteData/{id}",
+     *     summary="Update details of an employee",
+     *     tags={"Employee"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the employee to update",
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         required=false,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 @OA\Property(
+     *                     property="desc",
+     *                     type="string",
+     *                     description="Description of the employee"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="imageSSN",
+     *                     type="string",
+     *                     format="binary",
+     *                     description="Image of the SSN"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="livePhoto",
+     *                     type="string",
+     *                     format="binary",
+     *                     description="Live photo of the employee"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="nationalId",
+     *                     type="string",
+     *                     description="National ID of the employee"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="min_price",
+     *                     type="integer",
+     *                     description="Minimum price of the employee"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="user_id",
+     *                     type="integer",
+     *                     description="User ID of the employee"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="service_id",
+     *                     type="integer",
+     *                     description="Service ID of the employee"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="works[0][image]",
+     *                     type="string",
+     *                     format="binary",
+     *                     description="Image work 1",
+     *                      nullable=true,
+     *                 ),
+     *                 @OA\Property(
+     *                     property="works[1][image]",
+     *                     type="string",
+     *                     format="binary",
+     *                     description="Image work 2",
+     *                      nullable=true,
+     *                 ),
+     *                 @OA\Property(
+     *                     property="works[2][image]",
+     *                     type="string",
+     *                     format="binary",
+     *                     description="Image work 3",
+     *                      nullable=true,
+     *                 ),
+     *                 @OA\Property(
+     *                     property="works[3][image]",
+     *                     type="string",
+     *                     format="binary",
+     *                     description="Image work 4",
+     *                      nullable=true,
+     *                 ),
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Employee details updated successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="status",
+     *                 type="boolean",
+     *                 example=true
+     *             ),
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Employee profile details updated successfully"
+     *             ),
+     *             @OA\Property(
+     *                 property="employee",
+     *                 type="object"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Validation error",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="status",
+     *                 type="boolean",
+     *                 example=false
+     *             ),
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="object"
+     *             )
+     *         )
+     *     )
+     * )
+     */
+
+
+
+     public function updateEmployeeCompleteData(Request $request, $employeeId)
+     {
+         $validatedData = Validator::make($request->all(), [
+             'desc' => 'required|string',
+             'imageSSN' => 'file|mimes:jpeg,png,jpg,gif',
+             'livePhoto' => 'file|mimes:jpeg,png,jpg,gif',
+             'nationalId' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:13',
+             'min_price' => 'required',
+             'user_id' => 'required|exists:users,id',
+             'service_id' => 'required|exists:services,id',
+             'works' => 'nullable|array|max:4',
+             'works.*.image' => 'nullable|image|mimes:jpeg,png,jpg,gif',
+         ]);
+     
+         if ($validatedData->fails()) {
+             return response()->json(['status' => false, 'message' => $validatedData->errors()], 401);
+         }
+     
+         $employee = Employee::where('id', $employeeId)
+         ->where('checkByAdmin', 'rejected')
+         ->first();
+
+        if (!$employee) {
+            return response()->json([
+                'status' => false,
+                'message' => 'can‘t update data',
+            ], 404);
+        }
+     
+         // Update existing fields
+         $employee->desc = $request->desc;
+         $employee->nationalId = $request->nationalId;
+         $employee->min_price = $request->min_price;
+         $employee->user_id = $request->user_id;
+         $employee->service_id = $request->service_id;
+         $employee->checkByAdmin = 'waiting';
+     
+         // Handle imageSSN update
+         if ($request->hasFile('imageSSN')) {
+             // Delete old image if exists
+             if ($employee->imageSSN) {
+                 Storage::delete(str_replace('/storage', 'public', $employee->imageSSN));
+             }
+     
+             $newImageSsn = $request->file('imageSSN')->store('employees_ssn', 'public');
+             $employee->imageSSN = Storage::url($newImageSsn);
+         }
+     
+         // Handle livePhoto update
+         if ($request->hasFile('livePhoto')) {
+             // Delete old image if exists
+             if ($employee->livePhoto) {
+                 Storage::delete(str_replace('/storage', 'public', $employee->livePhoto));
+             }
+     
+             $newImageLive = $request->file('livePhoto')->store('employees_live_photo', 'public');
+             $employee->livePhoto = Storage::url($newImageLive);
+         }
+     
+         // Save updated employee data
+         $employee->save();
+     
+         // Update works if provided
+         if ($request->has('works')) {
+             $works = $request->works;
+     
+             foreach ($works as $index => $work) {
+                 $workImageUrl = null;
+     
+                 if (isset($work['image']) && $work['image']) {
+                     // Delete old image if exists
+                     $existingWork = EmployeeWork::where('user_id', $employee->user_id)
+                         ->orderBy('id', 'asc')
+                         ->skip($index)
+                         ->first();
+     
+                     if ($existingWork && $existingWork->image_url) {
+                         Storage::delete(str_replace('/storage', 'public', $existingWork->image_url));
+                     }
+     
+                     $workImage = $work['image'];
+                     $workImagePath = $workImage->store('employee_works', 'public');
+                     $workImageUrl = Storage::url($workImagePath);
+                 }
+     
+                 // Find existing or create new EmployeeWork
+                 $employeeWork = EmployeeWork::where('user_id', $employee->user_id)
+                     ->orderBy('id', 'asc')
+                     ->skip($index)
+                     ->first();
+     
+                 if ($employeeWork) {
+                     // Update existing EmployeeWork
+                     $employeeWork->image_url = $workImageUrl;
+                     $employeeWork->save();
+                 } else {
+                     // Create new EmployeeWork
+                     EmployeeWork::create([
+                         'user_id' => $employee->user_id,
+                         'image_url' => $workImageUrl,
+                     ]);
+                 }
+             }
+         }
+     
+         return response()->json([
+             'status' => true,
+             'message' => 'Employee profile details updated successfully',
+             'employee' => $employee,
+         ], 200);
+     }
+
+
     /**
      * @OA\Post(
      *     path="/api/employee/updateWorksImage/{user_id}",

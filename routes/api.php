@@ -54,6 +54,7 @@ Route::prefix('services')->group(function(){
 Route::controller(EmployeeController::class)->prefix('employee')->group(function(){
 
     Route::post('/employeeCompleteData','employeeCompleteData');
+    Route::Post("/updateEmployeeCompleteData/{id}",'updateEmployeeCompleteData');
     Route::Post("/updateWorksImage/{id}",'updateWorksImage');
     Route::get('/showAllEmployeesByServiceId/{service_id}','showAllEmployeesByServiceId');
     Route::get("/employeeProfile/{id}",'employeeProfile');
