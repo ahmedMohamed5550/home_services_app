@@ -22,7 +22,7 @@ class voucherController extends Controller
             'code'=>'string|required',
             'type'=>'required|in:fixed,percent',
             'discount'=>'required|numeric',
-            'status'=>'required|in:active,used,expired',
+            'status'=>'required|in:avialable,expired',
             'expired_at' => 'required|date_format:Y-m-d',
 
           ]);
@@ -59,7 +59,7 @@ class voucherController extends Controller
                 'code'=>'string|required',
                 'type'=>'required|in:fixed,percent',
                 'discount'=>'required|numeric',
-                'status'=>'required|in:active,used,expired',
+                'status'=>'required|in:avialable,expired',
                 'expired_at' => 'required|date_format:Y-m-d',
 
               ]);

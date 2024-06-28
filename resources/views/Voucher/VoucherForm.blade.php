@@ -24,9 +24,7 @@
       <div class="form-group">
         <label for="exampleInputEmail1">Voucher Status</label>
         <select class="form-control text-white" name="status" id="">
-            <option value="active">active</option>
-            <option value="used">used</option>
-            <option value="expired">expired</option>
+            <option value="avialable">avialable</option>
         </select>
       </div>
 

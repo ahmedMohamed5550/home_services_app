@@ -30,6 +30,13 @@ class employeeController extends Controller
         }
 
         $employee->checkByAdmin = $status;
+
+        // if($employee->checkByAdmin == 'rejected'){
+        //     $employee->delete();
+        // }
+        // else{
+        //     $employee->save();
+        // }   
         $employee->save();
 
         return redirect(url('admin/employee/all'))->with('succsess', 'Employee status updated successfully.');

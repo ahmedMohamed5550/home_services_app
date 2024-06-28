@@ -893,7 +893,9 @@ class EmployeeController extends Controller
 
      public function showAllEmployeesByServiceId($service_id)
      {
-         $allEmployees = Employee::where('service_id', $service_id)->get();
+         $allEmployees = Employee::where('service_id', $service_id)
+         ->where('checkByAdmin','accepted')
+         ->get();
      
          if ($allEmployees->count() != 0) {
              $employeesWithRatings = $allEmployees->map(function ($employee) {

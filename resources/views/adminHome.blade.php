@@ -32,12 +32,12 @@
                   <th> Employee phone </th>
                   <th> Desc</th>
                   <th> min_price </th>
-                  <th>image SSN  </th>
-                  <th> live photo </th>
+                  {{-- <th>image SSN  </th> --}}
+                  {{-- <th> live photo </th> --}}
                   <th> national ID </th>
                   <th> Status </th>
-                  <th> checkByAdmin </th>
-                  <th> show </th>
+                  {{-- <th> checkByAdmin </th> --}}
+                  <th> Show All Data </th>
                 </tr>
               </thead>
               <tbody>
@@ -52,19 +52,19 @@
                       </div>
                     </td>
                     <td>
-                      <img class="" src="{{asset("storage/$employee->imageSSN")}}" alt="image" />
+                      {{-- <img class="" src="{{asset("storage/$employee->imageSSN")}}" alt="image" /> --}}
                       <span class="ps-2">{{ $employee->name }}</span>
                     </td>
                     <td> {{ $employee->email }} </td>
                     <td> {{ $employee->phone  }}</td>
                     <td> {{ $employee->desc  }} </td>
                     <td> {{ $employee->min_price  }} </td>
-                    <td> <img class="" src="{{asset("storage/$employee->imageSSN")}}" alt="image" /></td>
-                    <td> <img class="" src="{{asset("storage/$employee->livePhoto")}}" alt="image" /></td>
+                    {{-- <td> <img class="" src="{{asset("storage/$employee->imageSSN")}}" alt="image" /></td> --}}
+                    {{-- <img class="" src="{{ asset('storage/' . $employee->livePhoto) }}" alt="image" /> --}}
                     <td>{{ $employee->nationalId  }} </td>
                     <td> {{ $employee->checkByAdmin  }} </td>
-                    <td><a href="{{ url("admin/checkByAdmin/{$employee->id}/accepted") }}" class="badge badge-outline-success">Accepted</a></td>
-                    <td><a href="{{ url("admin/checkByAdmin/{$employee->id}/rejected") }}" class="badge badge-outline-danger">Rejected</a></td>
+                    {{-- <td><a href="{{ url("admin/checkByAdmin/{$employee->id}/accepted") }}" class="badge badge-outline-success">Accepted</a></td> --}}
+                    {{-- <td><a href="{{ url("admin/checkByAdmin/{$employee->id}/rejected") }}" class="badge badge-outline-danger">Rejected</a></td> --}}
                     <td><a href="{{ url("admin/employee/show/$employee->id")}}" class="badge badge-outline-warning">show</a></td>
 
                   </tr>
