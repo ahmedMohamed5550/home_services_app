@@ -18,62 +18,72 @@ class SponserController extends Controller
     {
 
 
-        $data=$request->validate([
+        $data = $request->validate([
             'title' => 'required|string',
             'desc' => 'required|string',
             'image' => 'required|file|mimes:jpeg,png,jpg,gif|max:2048',
-            'type'=>'required|in:available,expired',
+            'type' => 'required|in:available,expired',
             'expired_at' => 'required|date',
-          ]);
-          $data['image']=Storage::putFile("sponsers",$data['image']);
-           Sponsor::create($data);
-          return redirect(url("admin/addSponser"))->with('succsess',"inserted is succsessfuly");
+        ]);
+        $newImage = $request->file('image')->store('sponsers', 'public');
+        // Prefix the stored path with 'storage'
+        $data['image'] = 'storage/' . $newImage;
+        Sponsor::create($data);
+        return redirect(url("admin/addSponser"))->with('succsess', "inserted is succsessfuly");
     }
 
     public function getAllsponser()
     {
-        $sponsers=Sponsor::all();
-        return view("Sponser.all",compact("sponsers"));
+        $sponsers = Sponsor::all();
+        return view("Sponser.all", compact("sponsers"));
     }
 
     public function showsponser($id)
     {
-        $sponser=Sponsor::findOrFail($id);
-        return view("Sponser.showOne",compact("sponser"));
-
+        $sponser = Sponsor::findOrFail($id);
+        return view("Sponser.showOne", compact("sponser"));
     }
     public function showEditForm($id)
     {
-        $sponser=Sponsor::findOrFail($id);
-        return view("Sponser.edit",compact("sponser"));
+        $sponser = Sponsor::findOrFail($id);
+        return view("Sponser.edit", compact("sponser"));
     }
-    public function editsponser(Request $request,$id)
+    public function editsponser(Request $request, $id)
     {
-        $data=$request->validate([
+        $data = $request->validate([
             'title' => 'required|string',
             'desc' => 'required|string',
             'image' => 'mimes:jpeg,png,jpg,gif|max:2048',
-            'type'=>'required|in:available,expired',
+            'type' => 'required|in:available,expired',
             'expired_at' => 'required|date',
-          ]);
-          $sponser=Sponsor::findOrFail($id);
-          if($request->has('image'))
-          {
-            Storage::delete($sponser->image);
-            $data['image']=Storage::putFile("sponsers",$data['image']);
-          }
-          $sponser->update($data);
+        ]);
+        $sponser = Sponsor::findOrFail($id);
+        if ($request->hasFile('image')) {
+            // Delete the old image if it exists
+            if ($sponser->image) {
+                Storage::disk('public')->delete(str_replace('storage/', '', $sponser->image));
+            }
+
+            // Store the new image and get the path
+            $newImage = $request->file('image')->store('sponsers', 'public');
+
+            // Prefix the stored path with 'storage'
+            $data['image'] = 'storage/' . $newImage;
+        }
+        $sponser->update($data);
 
 
-          return redirect(url("admin/sponser/show/$sponser->id"))->with('succsess',"updated is succsessfuly");;
+        return redirect(url("admin/sponser/show/$sponser->id"))->with('succsess', "updated is succsessfuly");;
     }
-    
+
     public function deletesponser($id)
     {
-        $sponser=Sponsor::findOrFail($id);
-        Storage::delete($sponser->image);
-        $sponser->delete();
-        return redirect(url("admin/sponser"))->with('succsess',"deleted is succsessfully");
-    }
+        $sponser = Sponsor::findOrFail($id);
+        if ($sponser->image) {
+            Storage::disk('public')->delete(str_replace('storage/', '', $sponser->image));
+        }
 
+        $sponser->delete();
+        return redirect(url("admin/sponser"))->with('succsess', "deleted is succsessfully");
+    }
 }

@@ -17,7 +17,7 @@
             @foreach ($sponsers as $sponser)
                 <tr>
                     <th scope="row">{{ $loop->iteration }}</th>
-                    <td><img src="{{ asset("storage/$sponser->image") }}" width="500" height="300" alt=""></td>
+                    <td><img src="{{ asset("$sponser->image") }}" width="500" height="300" alt=""></td>
                     <td>{{ $sponser->title }}</td>
                     <td> {{ $sponser->desc }}</td>
                     <td> {{ $sponser->type }}</td>

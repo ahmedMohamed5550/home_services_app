@@ -14,7 +14,7 @@
     <tbody>
       <tr>
 
-        <td><img src="{{asset("storage/$service->image")}}" width="500" height="300" alt=""></td>
+        <td><img src="{{asset("$service->image")}}" width="500" height="300" alt=""></td>
         <td>{{$service->name}}</td>
         <td>{{substr($service->desc, 0,80)}}</td>
 

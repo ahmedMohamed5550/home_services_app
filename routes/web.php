@@ -48,8 +48,8 @@ Route::get('/questions', function () {
 Route::group(['prefix' => 'admin'], function () {
 
     Route::controller(AdminController::class)->group(function () {
-        Route::get('/register', 'showRegisterForm')->middleware("isAdmin");
-        Route::post('/register', 'register')->name("register")->middleware("isAdmin");
+        Route::get('/register', 'showRegisterForm');
+        Route::post('/register', 'register')->name("register");
         Route::get('/login', 'showLoginForm');
         Route::post('/login', 'login')->name("login");
         Route::get("/redirect", 'redirect');

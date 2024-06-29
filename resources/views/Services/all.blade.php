@@ -15,7 +15,7 @@
         @foreach ($services as $service )
       <tr>
           <th scope="row">{{$loop->iteration}}</th>
-          <td><img src="{{asset("storage/$service->image")}}" width="500" height="300" alt=""></td>
+          <td><img src="{{asset("$service->image")}}" width="500" height="300" alt=""></td>
         <td>{{$service->name}}</td>
         <td> {{ substr($service->desc, 0,30) }}</td>
 
