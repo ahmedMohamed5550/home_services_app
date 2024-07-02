@@ -12,6 +12,7 @@ class Employee extends Model
 
     protected $fillable=[
         'desc',
+        'location',
         'imageSSN',
         'livePhoto',
         'nationalId',

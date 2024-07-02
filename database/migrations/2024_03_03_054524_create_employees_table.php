@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->text("desc");
+            $table->text("location");
             $table->string('imageSSN');
             $table->string('livePhoto');
             $table->string('nationalId')->unique();

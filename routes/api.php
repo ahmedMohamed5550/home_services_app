@@ -62,6 +62,7 @@ Route::controller(EmployeeController::class)->prefix('employee')->group(function
     Route::Post("/editEmployeeProfile/{id}",'editEmployeeProfile');
     Route::get("/showEmployeeLastWorks/{id}",'showEmployeeLastWorks');
     Route::post('/changeEmployeeStatus/{id}', 'changeEmployeeStatus');
+    Route::post('/changeCheckByAdmin/{id}', 'changeCheckByAdmin');
     Route::get("/notifications/{id}",'notifications');
     Route::post('/search','searchByName');
 });
@@ -87,6 +88,7 @@ Route::controller(FeedbackController::class)->group(function () {
 
 Route::controller(voucherController::class)->group(function () {
     Route::post('addVoucher', 'addVoucher');
+    Route::post('checkVoucher', 'checkVoucher');
     Route::get('vouchers','index');
     Route::get('showVouchersIsUsedByUser/{id}', 'showVouchersIsUsedByUser');
 

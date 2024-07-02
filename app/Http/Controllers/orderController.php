@@ -39,11 +39,6 @@ class orderController extends Controller
      *                     description="Order price"
      *                 ),
      *                 @OA\Property(
-     *                     property="location",
-     *                     type="string",
-     *                     description="Order location"
-     *                 ),
-     *                 @OA\Property(
      *                     property="date_of_delivery",
      *                     type="string",
      *                     format="date-time",
@@ -64,6 +59,11 @@ class orderController extends Controller
      *                     property="user_id",
      *                     type="integer",
      *                     description="User ID"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="location_id",
+     *                     type="integer",
+     *                     description="location ID"
      *                 ),
      *                 @OA\Property(
      *                     property="employee_id",
@@ -100,9 +100,9 @@ class orderController extends Controller
     // Validation rules
     $validator = Validator::make($request->all(), [
         'price' => 'required',
-        'location' => 'required|string',
         'date_of_delivery' => 'required|after_or_equal:' . date('Y-m-d H:i:s'),
         'user_id' => 'required|integer|exists:users,id',
+        'location_id' => 'required|integer|exists:locations,id',
         'employee_id' => 'required|integer|exists:employees,id',
         'order_descriptions' => 'required|string',
         'voucher_code' => 'sometimes|exists:vouchers,code',
@@ -123,7 +123,7 @@ class orderController extends Controller
         // Create a new order instance
         $order = new Order();
         $order->fill($request->only([
-            'price', 'location', 'date_of_delivery',
+            'price', 'location_id', 'date_of_delivery',
             'user_id', 'employee_id', 'order_descriptions', 'voucher_code'
         ]));
 
@@ -131,7 +131,7 @@ class orderController extends Controller
         if ($request->has('voucher_code')) {
             // Attempt to find a valid voucher
             $voucher = Voucher::where('code', $request->voucher_code)
-                              ->where('expired_at', '>', now())
+                              ->where('expired_at', '>', today())
                               ->where('status', 'avialable')
                               ->first();
 
@@ -348,6 +348,7 @@ class orderController extends Controller
 
             if($orders ->count() != 0){
                 foreach($orders as $order){
+                $order->location;
                 $order->user; // return user data who reserved order
                 $order->employee->user; // return employee data who reserved with it
                 $order->employee->service; // return service who reserved it
@@ -417,6 +418,7 @@ class orderController extends Controller
 
             if($orders ->count() != 0){
                 foreach($orders as $order){
+                $order->location;
                 $order->user; // return user data who reserved order
                 $order->employee->user; // return employee data who reserved with it
                 $order->employee->service; // return service who reserved it

@@ -420,6 +420,10 @@
                                         "description": "Description of the employee",
                                         "type": "string"
                                     },
+                                    "location": {
+                                        "description": "location of the employee",
+                                        "type": "string"
+                                    },
                                     "imageSSN": {
                                         "description": "صورة الباطاقة",
                                         "type": "string",
@@ -538,7 +542,7 @@
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "ID of the employee to update",
+                        "description": "ID of the employee to update data",
                         "required": true,
                         "schema": {
                             "type": "integer",
@@ -554,6 +558,10 @@
                                 "properties": {
                                     "desc": {
                                         "description": "Description of the employee",
+                                        "type": "string"
+                                    },
+                                    "location": {
+                                        "description": "location in details",
                                         "type": "string"
                                     },
                                     "imageSSN": {
@@ -974,16 +982,16 @@
                 ]
             }
         },
-        "/api/employee/changeEmployeeStatus/{employee_id}": {
+        "/api/employee/changeEmployeeStatus/{id}": {
             "post": {
                 "tags": [
                     "Employee"
                 ],
                 "summary": "Change employee status between ['available', 'busy']",
-                "operationId": "get_employee_id",
+                "operationId": "6805a37151be200e6f5f0eaabacf7d49",
                 "parameters": [
                     {
-                        "name": "employee_id",
+                        "name": "id",
                         "in": "path",
                         "description": "ID of the employee",
                         "required": true,
@@ -1002,6 +1010,136 @@
                                         "description": "Employee status",
                                         "type": "string",
                                         "example": "available"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Change employee status successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "true"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Change status successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No employee found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "false"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No employee found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation errors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "false"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation error"
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "additionalProperties": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "false"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Server error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/employee/changeCheckByAdmin/{id}": {
+            "post": {
+                "tags": [
+                    "Employee"
+                ],
+                "summary": "Change employee status between ['accepted','rejected']",
+                "operationId": "5bb91cf63953f01eaed6520b233c54d0",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the employee",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "checkByAdmin": {
+                                        "description": "checkByAdmin to show Employee data",
+                                        "type": "string",
+                                        "example": "accepted"
                                     }
                                 },
                                 "type": "object"
@@ -2238,10 +2376,6 @@
                                         "description": "Order price",
                                         "type": "integer"
                                     },
-                                    "location": {
-                                        "description": "Order location",
-                                        "type": "string"
-                                    },
                                     "date_of_delivery": {
                                         "description": "Date of delivery in DateTime format",
                                         "type": "string",
@@ -2258,6 +2392,10 @@
                                     },
                                     "user_id": {
                                         "description": "User ID",
+                                        "type": "integer"
+                                    },
+                                    "location_id": {
+                                        "description": "location ID",
                                         "type": "integer"
                                     },
                                     "employee_id": {
@@ -3062,6 +3200,80 @@
                                         "message": {
                                             "type": "string",
                                             "example": "No locations found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/checkVoucher": {
+            "post": {
+                "tags": [
+                    "Vouchers"
+                ],
+                "summary": "check voucher avialable or no",
+                "operationId": "5f243eb8adc0ca50f47782a9a21f7bd3",
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "code": {
+                                        "description": "what is the code you want to use it to check it avialable or not",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "checkVoucher retrieve response successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "successfully"
+                                        },
+                                        "employee": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "object"
                                         }
                                     },
                                     "type": "object"

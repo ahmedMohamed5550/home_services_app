@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Location extends Model
 {
     use HasFactory;
-    protected $table="location";
+    protected $table="locations";
     protected $fillable = [
         'city',
         'bitTitle',
@@ -21,5 +21,9 @@ class Location extends Model
 
     public function user(){
         return $this->belongsTo(User::class,'user_id');
+    }
+
+    public function locations(){
+        return $this->hasMany(Location::class);
     }
 }

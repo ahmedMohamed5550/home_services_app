@@ -35,7 +35,7 @@ class sendNotifyToEmployeeAboutUserResponseOrder extends Notification
             'order_id' => $this->order_id,
             'user_name' => $this->user_name,
             'message' =>$this->user_name." " . $this->status . " this order",
-            'timestamp' => Carbon::now()->toDateTimeString()
+            'timestamp' => Carbon::now('Africa/Cairo')->toDateTimeString()
         ];
     }
 }

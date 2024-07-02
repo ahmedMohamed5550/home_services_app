@@ -12,9 +12,9 @@ class Order extends Model
     protected $fillable=[
         'price',
         'status',
-        'location',
         'date_of_delivery',
         'user_id',
+        'location_id',
         'employee_id',
         'order_descriptions',
         'voucher_code',
@@ -35,6 +35,10 @@ class Order extends Model
 
     public function feedback(){
         return $this->BelongsTo(Feedback::class);
+    }
+
+    public function location(){
+        return $this->belongsTo(Location::class);
     }
 
 }

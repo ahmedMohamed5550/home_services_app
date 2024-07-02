@@ -6,6 +6,7 @@ use App\Models\Order;
 use App\Models\UserVoucher;
 use App\Models\Voucher;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Validator;
 
 class voucherController extends Controller
@@ -55,6 +56,8 @@ class voucherController extends Controller
                  'message' => "No Voucher Found"
              ],401);
          }
+
+        Artisan::call('vouchers:update-status');
 
      }
 
@@ -182,6 +185,85 @@ class voucherController extends Controller
                  'message' => 'failed',
              ], 404);
          }
+     }
+
+
+    /**
+     * @OA\Post(
+     *     path="/api/checkVoucher",
+     *     summary="check voucher avialable or no",
+     *     tags={"Vouchers"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=false,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 @OA\Property(
+     *                     property="code",
+     *                     type="string",
+     *                     description="what is the code you want to use it to check it avialable or not"
+     *                 ),
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="checkVoucher retrieve response successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="status",
+     *                 type="boolean",
+     *                 example=true
+     *             ),
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="successfully"
+     *             ),
+     *             @OA\Property(
+     *                 property="employee",
+     *                 type="object"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Validation error",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="status",
+     *                 type="boolean",
+     *                 example=false
+     *             ),
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="object"
+     *             )
+     *         )
+     *     )
+     * )
+     */
+
+     public function checkVoucher(Request $request){
+        $checkVoucher = Voucher::where('code',$request->input('code'))
+        ->where('status','avialable')
+        ->where('expired_at', '>', today())
+        ->first();
+
+        if($checkVoucher){
+            return response()->json([
+                'status' => true,
+                'vouchers' => $checkVoucher,
+            ], 200);
+        }
+
+        else{
+            return response()->json([
+                'status' => false,
+                'message' => 'this voucher doesn`t exist',
+            ], 404);
+        }
      }
      
 }

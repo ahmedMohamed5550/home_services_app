@@ -39,6 +39,11 @@ class EmployeeController extends Controller
      *                     description="Description of the employee"
      *                 ),
      *                 @OA\Property(
+     *                     property="location",
+     *                     type="string",
+     *                     description="location of the employee"
+     *                 ),
+     *                 @OA\Property(
      *                     property="imageSSN",
      *                     type="string",
      *                     format="binary",
@@ -143,6 +148,7 @@ class EmployeeController extends Controller
 
         $validatedData = Validator::make($request->all(), [
             'desc' => 'required|string',
+            'location' => 'required|string',
             'imageSSN' => 'file|mimes:jpeg,png,jpg,gif',
             'livePhoto' => 'file|mimes:jpeg,png,jpg,gif',
             'nationalId' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:13',
@@ -168,6 +174,7 @@ class EmployeeController extends Controller
 
         $employee = Employee::create([
             'desc' => $request->desc,
+            'location' => $request->location,
             'imageSSN' => $imageSsnUrl,
             'livePhoto' => $imageLive,
             'nationalId' => $request->nationalId,
@@ -235,7 +242,7 @@ class EmployeeController extends Controller
      *         name="id",
      *         in="path",
      *         required=true,
-     *         description="ID of the employee to update",
+     *         description="ID of the employee to update data",
      *         @OA\Schema(
      *             type="integer",
      *             format="int64"
@@ -250,6 +257,11 @@ class EmployeeController extends Controller
      *                     property="desc",
      *                     type="string",
      *                     description="Description of the employee"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="location",
+     *                     type="string",
+     *                     description="location in details"
      *                 ),
      *                 @OA\Property(
      *                     property="imageSSN",
@@ -358,6 +370,7 @@ class EmployeeController extends Controller
      {
          $validatedData = Validator::make($request->all(), [
              'desc' => 'required|string',
+             'location' => 'required|string',
              'imageSSN' => 'file|mimes:jpeg,png,jpg,gif',
              'livePhoto' => 'file|mimes:jpeg,png,jpg,gif',
              'nationalId' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:13',
@@ -385,6 +398,7 @@ class EmployeeController extends Controller
      
          // Update existing fields
          $employee->desc = $request->desc;
+         $employee->location = $request->location;
          $employee->nationalId = $request->nationalId;
          $employee->min_price = $request->min_price;
          $employee->user_id = $request->user_id;
@@ -932,13 +946,12 @@ class EmployeeController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/employee/changeEmployeeStatus/{employee_id}",
+     *     path="/api/employee/changeEmployeeStatus/{id}",
      *     summary="Change employee status between ['available', 'busy']",
-     *     operationId="get_employee_id",
      *     tags={"Employee"},
      *     security={{"bearerAuth":{}}},
      *     @OA\Parameter(
-     *         name="employee_id",
+     *         name="id",
      *         in="path",
      *         required=true,
      *         description="ID of the employee",
@@ -1032,6 +1045,110 @@ class EmployeeController extends Controller
             throw $e;
         }
     }
+
+
+
+    /**
+     * @OA\Post(
+     *     path="/api/employee/changeCheckByAdmin/{id}",
+     *     summary="Change employee status between ['accepted','rejected']",
+     *     tags={"Employee"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the employee",
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 @OA\Property(
+     *                     property="checkByAdmin",
+     *                     type="string",
+     *                     description="checkByAdmin to show Employee data",
+     *                     example="accepted"
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Change employee status successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="true"),
+     *             @OA\Property(property="message", type="string", example="Change status successfully")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="401",
+     *         description="No employee found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="false"),
+     *             @OA\Property(property="message", type="string", example="No employee found")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="422",
+     *         description="Validation errors",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="false"),
+     *             @OA\Property(property="message", type="string", example="Validation error"),
+     *             @OA\Property(
+     *                 property="errors",
+     *                 type="object",
+     *                 @OA\AdditionalProperties(type="string")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Server error",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="false"),
+     *             @OA\Property(property="message", type="string", example="Server error")
+     *         )
+     *     )
+     * )
+     */
+
+
+        // function to change employee status
+
+        public function changeCheckByAdmin(Request $request,$id){
+            try{
+            $employee=Employee::find($id);
+                if($employee){
+                    $employee->update(['checkByAdmin'=> $request->checkByAdmin]);
+    
+                    return response()->json([
+                        'status' => 'true',
+                        'message' => 'change checkByAdmin successfully',
+                    ],200);
+                }
+    
+                else {
+                    return response()->json([
+                        'status' => 'false',
+                        'message' => 'no employee found',
+                    ],401);
+                }
+    
+            }
+    
+            catch (Throwable $e) {
+                throw $e;
+            }
+        }
 
 
 

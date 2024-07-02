@@ -14,9 +14,9 @@ class Kernel extends ConsoleKernel
      *
      * @var array
      */
-    protected $commands = [
-        Commands\UpdateVoucherStatus::class,
-    ];
+    // protected $commands = [
+    //     Commands\UpdateVoucherStatus::class,
+    // ];
 
 
     /**

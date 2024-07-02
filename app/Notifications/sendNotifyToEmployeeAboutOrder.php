@@ -42,7 +42,7 @@ class sendNotifyToEmployeeAboutOrder extends Notification
             'date_of_delivery' => $this->date_of_delivery,
             'descriptions' => $this->descriptions,
             'user_name' => $this->user_name,
-            'timestamp' => Carbon::now()->toDateTimeString()
+            'timestamp' => Carbon::now('Africa/Cairo')->toDateTimeString()
         ];
     }
 }

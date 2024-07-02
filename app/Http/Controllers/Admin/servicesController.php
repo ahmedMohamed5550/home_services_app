@@ -15,8 +15,6 @@ class servicesController extends Controller
     }
     public function storeServices(Request $request)
     {
-
-
         $data = $request->validate([
             "name" => "required|string",
             "desc" => "required|string",
